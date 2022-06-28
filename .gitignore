@@ -1,4 +1,4 @@
-secret\
+Secret.java
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,java
 
@@ -141,4 +141,7 @@ fabric.properties
 hs_err_pid*
 replay_pid*
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij,java
+# End of https://www.toptal.com/developers/gitignore/api/intellij,javaSecret.java
+Secret.java
+Secret.java
+Secret.java

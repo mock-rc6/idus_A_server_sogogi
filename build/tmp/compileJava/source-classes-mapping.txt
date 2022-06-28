@@ -10,14 +10,14 @@ com/example/demo/utils/ValidationRegex.java
  com.example.demo.utils.ValidationRegex
 com/example/demo/src/user1/model/PostLoginRes.java
  com.example.demo.src.user1.model.PostLoginRes
-com/example/demo/src/user/UserDao.java
- com.example.demo.src.user.UserDao
-com/example/demo/src/user1/UserProvider1.java
- com.example.demo.src.user1.UserProvider1
+com/example/demo/DemoApplication.java
+ com.example.demo.DemoApplication
+com/example/demo/src/user1/model/User.java
+ com.example.demo.src.user1.model.User
 com/example/demo/src/user1/model/PatchUserReq.java
  com.example.demo.src.user1.model.PatchUserReq
-com/example/demo/config/BaseResponseStatus.java
- com.example.demo.config.BaseResponseStatus
+com/example/demo/src/user/model/PostUserRes.java
+ com.example.demo.src.user.model.PostUserRes
 com/example/demo/src/user1/model/GetUserRes.java
  com.example.demo.src.user1.model.GetUserRes
 com/example/demo/src/WebSecurityConfig.java
@@ -30,25 +30,31 @@ com/example/demo/src/user1/model/PostLoginReq.java
  com.example.demo.src.user1.model.PostLoginReq
 com/example/demo/config/secret/Secret.java
  com.example.demo.config.secret.Secret
+com/example/demo/src/user1/model/PostUserRes.java
+ com.example.demo.src.user1.model.PostUserRes
+com/example/demo/src/user/model/PostLoginReq.java
+ com.example.demo.src.user.model.PostLoginReq
 com/example/demo/src/user1/UserController1.java
  com.example.demo.src.user1.UserController1
-com/example/demo/src/user1/model/User.java
- com.example.demo.src.user1.model.User
 com/example/demo/src/user1/UserService1.java
  com.example.demo.src.user1.UserService1
-com/example/demo/src/user/model/PostUserRes.java
- com.example.demo.src.user.model.PostUserRes
 com/example/demo/src/user/UserController.java
  com.example.demo.src.user.UserController
 com/example/demo/config/BaseResponse.java
  com.example.demo.config.BaseResponse
+com/example/demo/src/user/model/PostLoginRes.java
+ com.example.demo.src.user.model.PostLoginRes
+com/example/demo/src/user/model/User.java
+ com.example.demo.src.user.model.User
+com/example/demo/src/user/UserDao.java
+ com.example.demo.src.user.UserDao
+com/example/demo/src/user1/UserProvider1.java
+ com.example.demo.src.user1.UserProvider1
 com/example/demo/src/user/UserService.java
  com.example.demo.src.user.UserService
+com/example/demo/config/BaseResponseStatus.java
+ com.example.demo.config.BaseResponseStatus
 com/example/demo/config/BaseException.java
  com.example.demo.config.BaseException
-com/example/demo/DemoApplication.java
- com.example.demo.DemoApplication
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
-com/example/demo/src/user1/model/PostUserRes.java
- com.example.demo.src.user1.model.PostUserRes

@@ -1,5 +1,7 @@
 package com.example.demo.src.user;
 
+import com.example.demo.src.user.model.PostLoginReq;
+import com.example.demo.src.user.model.PostLoginRes;
 import com.example.demo.src.user.model.PostUserReq;
 import com.example.demo.src.user.model.PostUserRes;
 import org.slf4j.Logger;
@@ -32,12 +34,6 @@ public class UserController {
     }
 
 
-    /**
-     * 회원가입 API
-     * [POST] /users
-     * @return BaseResponse<PostUserRes>
-     */
-    // Body
     @ResponseBody
     @PostMapping("")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
@@ -84,9 +80,45 @@ public class UserController {
             PostUserRes postUserRes = userService.createUser(postUserReq);
             return new BaseResponse<>(postUserRes);
         } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
+            return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    @ResponseBody
+    @PostMapping("login")
+    public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
+        if(postLoginReq.getEmail() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+
+        if(postLoginReq.getEmail().length() > 320) {
+            return new BaseResponse<>(POST_USERS_OVER_LENGTH_EMAIL);
+        }
+
+        String emailPattern = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$";
+        if(!Pattern.matches(emailPattern, postLoginReq.getEmail())) {
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        }
+
+        if(postLoginReq.getPassword() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
+
+        String passwordPattern = "^(?=.*[a-z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}";
+        if(!Pattern.matches(passwordPattern, postLoginReq.getPassword())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+
+        try {
+            PostLoginRes postLoginRes = userService.login(postLoginReq);
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+
 
 
 }

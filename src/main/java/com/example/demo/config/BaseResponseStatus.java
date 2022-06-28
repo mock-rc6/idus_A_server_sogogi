@@ -25,10 +25,11 @@ public enum BaseResponseStatus {
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
 
-    // [POST] /users
+    // [POST] /users, /users/login
     POST_USERS_EMPTY_EMAIL(false, 2020, "이메일을 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, 2021, "이메일 형식을 확인해주세요."),
     POST_USERS_OVER_LENGTH_EMAIL(false, 2022, "이메일 길이를 확인해주세요."),
+
 
     POST_USERS_EMPTY_PHONENUMBER(false,2030,"휴대폰 번호를 입력해주세요."),
     POST_USERS_INVALID_PHONENUMBER(false,2031,"잘못된 휴대폰 번호입니다."),
@@ -53,8 +54,7 @@ public enum BaseResponseStatus {
     
     POST_USERS_EXISTS_PHONENUMBER(false,3020,"중복된 휴대폰 번호입니다."),
 
-
-    FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
+    FAILED_TO_LOGIN(false,3014,"없는 이메일이거나 비밀번호가 틀렸습니다."),
 
 
 
