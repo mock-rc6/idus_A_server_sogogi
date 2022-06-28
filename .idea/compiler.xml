@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <excludeFromCompile>
+      <directory url="file://$PROJECT_DIR$/src/main/java/com/example/demo/src/user1" includeSubdirectories="true" />
+      <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/src/user1/UserController1.java" />
+      <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/src/user1/UserDao1.java" />
+      <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/src/user1/UserProvider1.java" />
+      <file url="file://$PROJECT_DIR$/src/main/java/com/example/demo/src/user1/UserService1.java" />
+    </excludeFromCompile>
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.16/6dc192c7f93ec1853f70d59d8a6dcf94eb42866/lombok-1.18.16.jar" />
+        </processorPath>
+        <module name="demo.main" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8" />
+  </component>
+</project>
