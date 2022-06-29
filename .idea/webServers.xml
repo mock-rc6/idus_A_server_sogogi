@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="de2535db-9778-4907-93ce-7af4f77e9dd3" name="idus" url="http://prod.sogogi.shop">
+        <fileTransfer rootFolder="/var/www/idus-code" accessType="SFTP" host="3.34.225.45" port="22" sshConfigId="714eecdc-0422-4962-8cd9-0e32683df6a9" sshConfig="ubuntu@3.34.225.45:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig host="3.34.225.45" id="714eecdc-0422-4962-8cd9-0e32683df6a9" keyPath="C:\Users\lkjde\Desktop\AWS 키페어\mykey.ppk" port="22" nameFormat="DESCRIPTIVE" username="ubuntu" useOpenSSHConfig="true" />
+    </configs>
+  </component>
+</project>
