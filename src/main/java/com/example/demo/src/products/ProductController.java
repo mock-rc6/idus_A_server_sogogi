@@ -2,6 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.products.model.GetProductsRealTime;
 import com.example.demo.src.products.model.GetProductsRes;
 import com.example.demo.src.user.UserService;
 import com.example.demo.utils.JwtService;
@@ -9,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
@@ -23,7 +26,7 @@ public class ProductController {
 
 
     @Autowired
-    public ProductController(ProductService productService, JwtService jwtService){
+    public ProductController(ProductService productService, JwtService jwtService) {
         this.productService = productService;
         this.jwtService = jwtService;
     }
@@ -32,18 +35,60 @@ public class ProductController {
     @ResponseBody
     @GetMapping("/{userId}")
     public BaseResponse<GetProductsRes> getProductsToday(@PathVariable Long userId) {
-        try{
+        try {
             long userIdByJwt = jwtService.getUserIdx();
-            if(userIdByJwt != userId) {
+            if (userIdByJwt != userId) {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
             GetProductsRes getProductsRes = productService.getProductsToday(userId);
             return new BaseResponse<>(getProductsRes);
-        } catch(BaseException exception) {
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }
 
 
+    @ResponseBody
+    @GetMapping("/{userId}/real-time")
+    public BaseResponse<GetProductsRealTime> getProductsRealTime(@RequestParam(value = "br") int br,
+                                                                 @RequestParam(value = "img") int img,
+                                                                 @PathVariable Long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            GetProductsRealTime getProductsRealTime;
+
+            //실시간 구매
+            if (br == 1) {
+                //이미지만 볼래요 X
+                if (img == 0) {
+                    getProductsRealTime = productService.getProductsRealTimeBuy(userId);
+                }
+                //이미지만 볼래요
+                else {
+                    getProductsRealTime = productService.getProductsRealTimeBuyImg(userId);
+                }
+            }
+            //실시간 후기
+            else{
+                //이미지만 볼래요 X
+                if (img == 0) {
+                    getProductsRealTime = productService.getProductsRealTimeReview(userId);
+                }
+                //이미지만 볼래요
+                else{
+                    getProductsRealTime = productService.getProductsRealTimeReviewImg(userId);
+                }
+            }
+
+            return new BaseResponse<>(getProductsRealTime);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
