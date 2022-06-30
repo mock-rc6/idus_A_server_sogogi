@@ -2,6 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.products.model.GetProductsNew;
 import com.example.demo.src.products.model.GetProductsRealTime;
 import com.example.demo.src.products.model.GetProductsRes;
 import com.example.demo.src.user.UserDao;
@@ -71,6 +72,24 @@ public class ProductService {
         try {
             GetProductsRealTime getProductsRealTime = productDao.getProductsRealTimeReviewImg(userId);
             return getProductsRealTime;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetProductsNew getProductsNew(Long userId) throws BaseException {
+        try {
+            GetProductsNew getProductsNew = productDao.getProductsNew(userId);
+            return getProductsNew;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetProductsNew getProductsNewImg(Long userId) throws BaseException {
+        try {
+            GetProductsNew getProductsNew = productDao.getProductsNewImg(userId);
+            return getProductsNew;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

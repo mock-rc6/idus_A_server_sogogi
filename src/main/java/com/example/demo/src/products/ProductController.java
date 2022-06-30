@@ -2,6 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.products.model.GetProductsNew;
 import com.example.demo.src.products.model.GetProductsRealTime;
 import com.example.demo.src.products.model.GetProductsRes;
 import com.example.demo.src.user.UserService;
@@ -87,6 +88,31 @@ public class ProductController {
 
             return new BaseResponse<>(getProductsRealTime);
 
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{userId}/new")
+    public BaseResponse<GetProductsNew> getProductsNew(@RequestParam("img") int img, @PathVariable Long userId) {
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            GetProductsNew getProductsNew;
+            //이미지만 볼래요 X
+            if(img == 0) {
+                getProductsNew = productService.getProductsNew(userId);
+            }
+            //이미지만 볼래요
+            else {
+                getProductsNew = productService.getProductsNewImg(userId);
+            }
+            return new BaseResponse<>(getProductsNew);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

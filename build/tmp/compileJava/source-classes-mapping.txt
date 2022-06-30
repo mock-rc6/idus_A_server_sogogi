@@ -24,8 +24,8 @@ com/example/demo/src/test/TestController.java
  com.example.demo.src.test.TestController
 com/example/demo/src/user/model/PostLoginReq.java
  com.example.demo.src.user.model.PostLoginReq
-com/example/demo/src/products/ProductDao.java
- com.example.demo.src.products.ProductDao
+com/example/demo/src/products/model/GetProductsRealTime.java
+ com.example.demo.src.products.model.GetProductsRealTime
 com/example/demo/src/products/model/RealTimeProducts.java
  com.example.demo.src.products.model.RealTimeProducts
 com/example/demo/config/secret/Secret.java
@@ -48,8 +48,12 @@ com/example/demo/DemoApplication.java
  com.example.demo.DemoApplication
 com/example/demo/src/products/model/GetProductsRes.java
  com.example.demo.src.products.model.GetProductsRes
-com/example/demo/src/products/model/GetProductsRealTime.java
- com.example.demo.src.products.model.GetProductsRealTime
+com/example/demo/src/products/model/NewProducts.java
+ com.example.demo.src.products.model.NewProducts
+com/example/demo/src/products/ProductDao.java
+ com.example.demo.src.products.ProductDao
+com/example/demo/src/products/model/GetProductsNew.java
+ com.example.demo.src.products.model.GetProductsNew
 com/example/demo/src/products/ProductService.java
  com.example.demo.src.products.ProductService
 com/example/demo/src/products/ProductController.java

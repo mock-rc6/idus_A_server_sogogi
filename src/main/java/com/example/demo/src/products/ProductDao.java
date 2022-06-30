@@ -179,4 +179,53 @@ public class ProductDao {
         getProductsRealTime.setRealTimeProducts(realTimeProductsList);
         return getProductsRealTime;
     }
+
+    public GetProductsNew getProductsNew(Long userId) {
+        String getNowQuery = "select date_format(now(), '%c월 %d일 %H:%i 기준')";
+        GetProductsNew getProductsNew =
+                new GetProductsNew(this.jdbcTemplate.queryForObject(getNowQuery, String.class));
+
+        String getProductQuery = "select P.productId, if(isnull(PL.status), false, true) as isLike, PI.imgUrl, W.nickName, P.title, P.price,\n" +
+                "       P.discountRate, round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, if(P.deliveryFee=0, true, false) as freeDelivery\n" +
+                "from Product P\n" +
+                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                "inner join Writer W using (writerId)\n" +
+                "order by (productId) desc limit 20";
+        List<NewProducts> newProductsList = this.jdbcTemplate.query(getProductQuery,
+                ((rs, rowNum) -> new NewProducts(
+                        rs.getLong("productId"),
+                        rs.getBoolean("isLike"),
+                        rs.getString("imgUrl"),
+                        rs.getString("nickName"),
+                        rs.getString("title"),
+                        rs.getInt("price"),
+                        rs.getInt("discountRate"),
+                        rs.getInt("finalPrice"),
+                        rs.getBoolean("freeDelivery"))), userId);
+
+        getProductsNew.setNewProductsList(newProductsList);
+        return getProductsNew;
+    }
+
+    public GetProductsNew getProductsNewImg(Long userId) {
+        String getNowQuery = "select date_format(now(), '%c월 %d일 %H:%i 기준')";
+        GetProductsNew getProductsNew =
+                new GetProductsNew(this.jdbcTemplate.queryForObject(getNowQuery, String.class));
+
+        String getProductsQuery = "select P.productId, if(isnull(PL.status), false, true) as isLike, PI.imgUrl\n" +
+                "from Product P\n" +
+                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                "order by (productId) desc limit 15";
+
+        List<NewProducts> newProductsList = this.jdbcTemplate.query(getProductsQuery,
+                ((rs, rowNum) -> new NewProducts(
+                        rs.getLong("productId"),
+                        rs.getBoolean("isLike"),
+                        rs.getString("imgUrl"))), userId);
+
+        getProductsNew.setNewProductsList(newProductsList);
+        return getProductsNew;
+    }
 }
