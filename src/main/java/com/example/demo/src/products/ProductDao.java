@@ -326,13 +326,22 @@ public class ProductDao {
 
         getProductDetail.setReviewList(reviewList);
 
-        String getQuery8 = "select nickName, profileimg, contents from ProductComment inner join User using(userId) where productId = ? limit 5";
+        String getQuery8 = "select U.nickName as userName, U.profileimg as userProfileImg, PC.contents as userComment, W.nickName as writerName,\n" +
+                "       W.profileImg as writerProfileImg, PWC.contents as writerComment\n" +
+                "from ProductComment PC\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join ProductWriterComment PWC using (commentId)\n" +
+                "left outer join Writer W using (writerId)\n" +
+                "where productId = ? limit 5";
 
         List<Comment> commentList = this.jdbcTemplate.query(getQuery8,
                 ((rs, rowNum) -> new Comment(
-                        rs.getString("nickName"),
-                        rs.getString("profileimg"),
-                        rs.getString("contents"))), productId);
+                        rs.getString("userName"),
+                        rs.getString("userProfileImg"),
+                        rs.getString("userComment"),
+                        rs.getString("writerName"),
+                        rs.getString("writerProfileImg"),
+                        rs.getString("writerComment"))), productId);
 
         getProductDetail.setCommentList(commentList);
 
@@ -343,5 +352,47 @@ public class ProductDao {
         String checkProductQuery = "select exists(select productId from Product where productId=?)";
 
         return this.jdbcTemplate.queryForObject(checkProductQuery, int.class, productId );
+    }
+
+    public List<Review> getProductReviews(long userId, long productId) {
+        String getReviewsQuery = "select PR.productReviewId, U.nickName, U.profileImg, PR.rating, date_format(PR.createAt, '%Y년 %c월 %e일') as createAt,\n" +
+                "       if(PR.repurchase='Y', true, false) as repurchase, PRI.imgUrl, PR.contents\n" +
+                "from ProductReview PR\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join (select productReviewId, imgUrl from ProductReviewImg group by (productReviewId)) PRI using (productReviewId)\n" +
+                "where productId = ?";
+        List<Review> reviewList = this.jdbcTemplate.query(getReviewsQuery,
+                (rs, row) -> new Review(
+                        rs.getLong("productReviewId"),
+                        rs.getString("nickName"),
+                        rs.getString("profileImg"),
+                        rs.getInt("rating"),
+                        rs.getString("createAt"),
+                        rs.getBoolean("repurchase"),
+                        rs.getString("imgUrl"),
+                        rs.getString("contents")), productId);
+
+        return reviewList;
+    }
+
+    public List<Comment> getProductComments(long userId, long productId) {
+        String getCommentsQuery = "select U.nickName as userName, U.profileimg as userProfileImg, PC.contents as userComment, W.nickName as writerName,\n" +
+                "       W.profileImg as writerProfileImg, PWC.contents as writerComment\n" +
+                "from ProductComment PC\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join ProductWriterComment PWC using (commentId)\n" +
+                "left outer join Writer W using (writerId)\n" +
+                "where productId = ?";
+
+        List<Comment> commentList = this.jdbcTemplate.query(getCommentsQuery,
+                ((rs, rowNum) -> new Comment(
+                        rs.getString("userName"),
+                        rs.getString("userProfileImg"),
+                        rs.getString("userComment"),
+                        rs.getString("writerName"),
+                        rs.getString("writerProfileImg"),
+                        rs.getString("writerComment"))), productId);
+
+        return commentList;
     }
 }

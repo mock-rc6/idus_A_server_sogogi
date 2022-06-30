@@ -2,10 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.products.model.GetProductDetail;
-import com.example.demo.src.products.model.GetProductsNew;
-import com.example.demo.src.products.model.GetProductsRealTime;
-import com.example.demo.src.products.model.GetProductsRes;
+import com.example.demo.src.products.model.*;
 import com.example.demo.src.user.UserService;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -135,4 +132,38 @@ public class ProductController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    @ResponseBody
+    @GetMapping("/{userId}/{productId}/reviews")
+    public BaseResponse<List<Review>> getProductReviews(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<Review> reviewList = productService.getProductReviews(userId, productId);
+            return new BaseResponse<>(reviewList);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{userId}/{productId}/comments")
+    public BaseResponse<List<Comment>> getProductComments(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<Comment> commentList = productService.getProductComments(userId, productId);
+            return new BaseResponse<>(commentList);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 }

@@ -8,7 +8,10 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class Comment {
-    private String nickName;
-    private String profileImg;
-    private String contents;
+    private String userName;
+    private String userProfileImg;
+    private String userComment;
+    private String writerName;
+    private String writerProfileImg;
+    private String writerComment;
 }

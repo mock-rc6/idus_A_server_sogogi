@@ -2,10 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
-import com.example.demo.src.products.model.GetProductDetail;
-import com.example.demo.src.products.model.GetProductsNew;
-import com.example.demo.src.products.model.GetProductsRealTime;
-import com.example.demo.src.products.model.GetProductsRes;
+import com.example.demo.src.products.model.*;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -106,6 +103,24 @@ public class ProductService {
         try {
             GetProductDetail getProductDetail = productDao.getProductDetail(userId, productId);
             return getProductDetail;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<Review> getProductReviews(long userId, long productId) throws BaseException {
+        try {
+            List<Review> reviewList = productDao.getProductReviews(userId, productId);
+            return reviewList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<Comment> getProductComments(long userId, long productId) throws BaseException {
+        try {
+            List<Comment> commentList = productDao.getProductComments(userId, productId);
+            return commentList;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
