@@ -2,6 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.src.products.model.GetProductDetail;
 import com.example.demo.src.products.model.GetProductsNew;
 import com.example.demo.src.products.model.GetProductsRealTime;
 import com.example.demo.src.products.model.GetProductsRes;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.FAILED_TO_SEARCH_PRODUCT;
 
 @Service
 @Transactional
@@ -90,6 +92,20 @@ public class ProductService {
         try {
             GetProductsNew getProductsNew = productDao.getProductsNewImg(userId);
             return getProductsNew;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetProductDetail getProductDetail(long userId, long productId) throws BaseException {
+
+        if(productDao.checkProduct(productId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_PRODUCT);
+        }
+
+        try {
+            GetProductDetail getProductDetail = productDao.getProductDetail(userId, productId);
+            return getProductDetail;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

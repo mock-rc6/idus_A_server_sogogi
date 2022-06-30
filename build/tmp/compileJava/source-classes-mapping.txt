@@ -16,8 +16,8 @@ com/example/demo/src/products/model/ProductReview.java
  com.example.demo.src.products.model.ProductReview
 com/example/demo/src/user/UserDao.java
  com.example.demo.src.user.UserDao
-com/example/demo/config/BaseResponseStatus.java
- com.example.demo.config.BaseResponseStatus
+com/example/demo/src/products/model/NewProducts.java
+ com.example.demo.src.products.model.NewProducts
 com/example/demo/src/WebSecurityConfig.java
  com.example.demo.src.WebSecurityConfig
 com/example/demo/src/test/TestController.java
@@ -32,29 +32,37 @@ com/example/demo/config/secret/Secret.java
  com.example.demo.config.secret.Secret
 com/example/demo/src/user/model/PostUserRes.java
  com.example.demo.src.user.model.PostUserRes
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
-com/example/demo/config/BaseResponse.java
- com.example.demo.config.BaseResponse
-com/example/demo/utils/JwtService.java
- com.example.demo.utils.JwtService
+com/example/demo/src/products/model/GetProductDetail.java
+ com.example.demo.src.products.model.GetProductDetail
+com/example/demo/src/products/model/GetProductsNew.java
+ com.example.demo.src.products.model.GetProductsNew
+com/example/demo/src/products/model/Review.java
+ com.example.demo.src.products.model.Review
 com/example/demo/src/user/model/User.java
  com.example.demo.src.user.model.User
-com/example/demo/src/user/UserService.java
- com.example.demo.src.user.UserService
-com/example/demo/config/BaseException.java
- com.example.demo.config.BaseException
+com/example/demo/src/products/model/ShortReview.java
+ com.example.demo.src.products.model.ShortReview
+com/example/demo/src/products/model/Comment.java
+ com.example.demo.src.products.model.Comment
 com/example/demo/DemoApplication.java
  com.example.demo.DemoApplication
 com/example/demo/src/products/model/GetProductsRes.java
  com.example.demo.src.products.model.GetProductsRes
-com/example/demo/src/products/model/NewProducts.java
- com.example.demo.src.products.model.NewProducts
 com/example/demo/src/products/ProductDao.java
  com.example.demo.src.products.ProductDao
-com/example/demo/src/products/model/GetProductsNew.java
- com.example.demo.src.products.model.GetProductsNew
+com/example/demo/src/user/UserService.java
+ com.example.demo.src.user.UserService
+com/example/demo/config/BaseResponseStatus.java
+ com.example.demo.config.BaseResponseStatus
+com/example/demo/config/BaseException.java
+ com.example.demo.config.BaseException
 com/example/demo/src/products/ProductService.java
  com.example.demo.src.products.ProductService
+com/example/demo/utils/JwtService.java
+ com.example.demo.utils.JwtService
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController
+com/example/demo/config/BaseResponse.java
+ com.example.demo.config.BaseResponse
 com/example/demo/src/products/ProductController.java
  com.example.demo.src.products.ProductController

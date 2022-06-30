@@ -228,4 +228,120 @@ public class ProductDao {
         getProductsNew.setNewProductsList(newProductsList);
         return getProductsNew;
     }
+
+    public GetProductDetail getProductDetail(long userId, long productId) {
+
+        String getImgUrlQuery = "select imgUrl from ProductImg where productId=?";
+        List<String> imgUrlList = this.jdbcTemplate.query(getImgUrlQuery,
+                ((rs, rowNum) -> rs.getString("imgUrl")), productId);
+
+        String getQuery1 = "select W.writerId, W.nickName, W.profileImg, P.rating, PR.countReview, P.title, P.price, P.discountRate,\n" +
+                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, OP.countBuyer, P.deliveryFee, P.freeAmount,\n" +
+                "       P.leftAmount, P.contents, W.rating as ratingAverage, WPR.countAllReview, PL.countProductLike\n" +
+                "from Product P\n" +
+                "inner join Writer W using (writerId)\n" +
+                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                "left outer join (select productId, count(userId) as countBuyer from Ordered inner join OrderProduct using (orderProductId) group by (productId)) OP using (productId)\n" +
+                "left outer join (select writerId, count(productReviewId) as countAllReview from ProductReview inner join Product using(productId) inner join Writer using(writerId) group by (writerId)) WPR using(writerId)\n" +
+                "left outer join (select productId, count(productLikeId) as countProductLike from ProductLike group by (productId)) PL using (productId)\n" +
+                "where productId = ?";
+
+        GetProductDetail getProductDetail = this.jdbcTemplate.queryForObject(getQuery1,
+                ((rs, rowNum) -> new GetProductDetail(
+                        rs.getLong("writerId"),
+                        rs.getString("nickName"),
+                        rs.getString("profileImg"),
+                        rs.getDouble("rating"),
+                        rs.getInt("countReview"),
+                        rs.getString("title"),
+                        rs.getInt("price"),
+                        rs.getInt("discountRate"),
+                        rs.getInt("finalPrice"),
+                        rs.getInt("countBuyer"),
+                        rs.getInt("deliveryFee"),
+                        rs.getInt("freeAmount"),
+                        rs.getInt("leftAmount"),
+                        rs.getString("contents"),
+                        rs.getDouble("ratingAverage"),
+                        rs.getInt("countAllReview"),
+                        rs.getInt("countProductLike"))), productId);
+
+        getProductDetail.setImgUrlList(imgUrlList);
+
+        String getQuery2 = "select exists(select productLikeId from ProductLike where userId=? and productId=?)";
+        Object[] params = new Object[]{userId, productId};
+
+        int isLike = this.jdbcTemplate.queryForObject(getQuery2, int.class, params);
+        if(isLike == 1)
+            getProductDetail.setLike(true);
+        else
+            getProductDetail.setLike(false);
+
+        String getWriterId = "select writerId from Product where productId=?";
+        int writerId = this.jdbcTemplate.queryForObject(getWriterId, int.class, productId);
+
+        String getQuery3 = "select sum(PL.countLike) as countProductLike from (select productId, count(productLikeId) as countLike from ProductLike group by (productId)) PL\n" +
+                "inner join Product using (productId) group by (writerId) having writerId = ?";
+
+        getProductDetail.setCountAllLike(this.jdbcTemplate.queryForObject(getQuery3, int.class, writerId));
+
+        String getQuery4 = "select count(userId) from Follow group by (writerId) having writerId=?";
+
+        getProductDetail.setCountFollow(this.jdbcTemplate.queryForObject(getQuery4, int.class, writerId));
+
+        String getQuery5 = "select count(userId) from Support group by (writerId) having writerId=?";
+
+        getProductDetail.setCountSupport(this.jdbcTemplate.queryForObject(getQuery5, int.class, writerId));
+
+        String getQuery6 = "select if(repurchase='Y', true, false) as repurchase, PRI.imgUrl, contents\n" +
+                "from ProductReview\n" +
+                "left outer join (select productReviewId, imgUrl from ProductReviewImg group by (productReviewId)) PRI using (productReviewId)\n" +
+                "where productId = ? and rating = 5\n" +
+                "order by (productReviewId) desc limit 2";
+        List<ShortReview> shortReviewList = this.jdbcTemplate.query(getQuery6,
+                ((rs, rowNum) -> new ShortReview(
+                        rs.getBoolean("repurchase"),
+                        rs.getString("imgUrl"),
+                        rs.getString("contents"))), productId);
+
+        getProductDetail.setShortReviewList(shortReviewList);
+
+        String getQuery7 = "select PR.productReviewId, U.nickName, U.profileImg, PR.rating, date_format(PR.createAt, '%Y년 %c월 %e일') as createAt,\n" +
+                "       if(PR.repurchase='Y', true, false) as repurchase, PRI.imgUrl, PR.contents\n" +
+                "from ProductReview PR\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join (select productReviewId, imgUrl from ProductReviewImg group by (productReviewId)) PRI using (productReviewId)\n" +
+                "where productId = ?";
+
+        List<Review> reviewList = this.jdbcTemplate.query(getQuery7,
+                ((rs, rowNum) -> new Review(
+                        rs.getLong("productReviewId"),
+                        rs.getString("nickName"),
+                        rs.getString("profileImg"),
+                        rs.getInt("rating"),
+                        rs.getString("createAt"),
+                        rs.getBoolean("repurchase"),
+                        rs.getString("imgUrl"),
+                        rs.getString("contents"))), productId);
+
+        getProductDetail.setReviewList(reviewList);
+
+        String getQuery8 = "select nickName, profileimg, contents from ProductComment inner join User using(userId) where productId = ? limit 5";
+
+        List<Comment> commentList = this.jdbcTemplate.query(getQuery8,
+                ((rs, rowNum) -> new Comment(
+                        rs.getString("nickName"),
+                        rs.getString("profileimg"),
+                        rs.getString("contents"))), productId);
+
+        getProductDetail.setCommentList(commentList);
+
+        return getProductDetail;
+    }
+
+    public int checkProduct(long productId) {
+        String checkProductQuery = "select exists(select productId from Product where productId=?)";
+
+        return this.jdbcTemplate.queryForObject(checkProductQuery, int.class, productId );
+    }
 }

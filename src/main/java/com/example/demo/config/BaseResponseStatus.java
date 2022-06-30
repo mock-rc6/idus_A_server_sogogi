@@ -56,6 +56,8 @@ public enum BaseResponseStatus {
 
     FAILED_TO_LOGIN(false,3014,"없는 이메일이거나 비밀번호가 틀렸습니다."),
 
+    FAILED_TO_SEARCH_PRODUCT(false,3030,"존재하지 않는 작품입니다."),
+
 
 
     /**

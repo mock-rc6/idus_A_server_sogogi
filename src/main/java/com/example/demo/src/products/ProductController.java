@@ -2,6 +2,7 @@ package com.example.demo.src.products;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.products.model.GetProductDetail;
 import com.example.demo.src.products.model.GetProductsNew;
 import com.example.demo.src.products.model.GetProductsRealTime;
 import com.example.demo.src.products.model.GetProductsRes;
@@ -113,6 +114,23 @@ public class ProductController {
                 getProductsNew = productService.getProductsNewImg(userId);
             }
             return new BaseResponse<>(getProductsNew);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{userId}/{productId}")
+    public BaseResponse<GetProductDetail> getProductDetail(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            GetProductDetail getProductDetail = productService.getProductDetail(userId, productId);
+            return new BaseResponse<>(getProductDetail);
+
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
