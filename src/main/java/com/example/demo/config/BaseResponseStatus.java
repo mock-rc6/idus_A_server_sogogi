@@ -58,6 +58,10 @@ public enum BaseResponseStatus {
 
     FAILED_TO_SEARCH_PRODUCT(false,3030,"존재하지 않는 작품입니다."),
 
+    FAILED_TO_SEARCH_ONLINE_CLASS(false,3040,"존재하지 않는 온라인 클래스입니다."),
+
+    FAILED_TO_SEARCH_OFFLINE_CLASS(false,3050,"존재하지 않는 오프라인 클래스입니다."),
+
 
 
     /**
