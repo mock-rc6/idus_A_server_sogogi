@@ -3,12 +3,15 @@ package com.example.demo.src.classes;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.classes.model.GetOnlineClass;
 import com.example.demo.src.classes.model.GetOnlineClasses;
+import com.example.demo.src.classes.model.OnlineClassReviews;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 import static com.example.demo.config.BaseResponseStatus.FAILED_TO_SEARCH_ONLINE_CLASS;
@@ -46,6 +49,15 @@ public class ClassService {
         try {
             GetOnlineClass getOnlineClass = classDao.getOnlineClass(userId, onlineClassId);
             return getOnlineClass;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<OnlineClassReviews> getOnlineClassReview(long userId, long onlineClassId) throws BaseException {
+        try {
+            List<OnlineClassReviews> onlineClassReviewsList = classDao.getOnlineClassReview(userId, onlineClassId);
+            return onlineClassReviewsList;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

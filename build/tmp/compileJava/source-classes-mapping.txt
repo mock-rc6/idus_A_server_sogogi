@@ -82,9 +82,11 @@ com/example/demo/src/products/model/GetProductsRes.java
  com.example.demo.src.products.model.GetProductsRes
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
-com/example/demo/src/classes/ClassService.java
- com.example.demo.src.classes.ClassService
-com/example/demo/src/classes/ClassDao.java
- com.example.demo.src.classes.ClassDao
+com/example/demo/src/classes/model/OnlineClassReviews.java
+ com.example.demo.src.classes.model.OnlineClassReviews
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
+com/example/demo/src/classes/ClassDao.java
+ com.example.demo.src.classes.ClassDao
+com/example/demo/src/classes/ClassService.java
+ com.example.demo.src.classes.ClassService
