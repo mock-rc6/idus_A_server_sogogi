@@ -45,5 +45,5 @@ public class GetOnlineClass {
     private int countReview;
     private List<OnlineClassReview> onlineClassReviewList;
     private String contents;
-    private List<OnlineClassComment> onlineClassCommentList;
+    private List<ClassComment> onlineClassCommentList;
 }

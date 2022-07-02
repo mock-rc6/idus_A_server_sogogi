@@ -157,8 +157,8 @@ public class ClassDao {
                 "inner join Writer W using(writerId)\n" +
                 "where onlineClassId = ?";
 
-        List<OnlineClassComment> onlineClassCommentList = this.jdbcTemplate.query(getQuery2, ((rs, rowNum) ->
-                new OnlineClassComment(
+        List<ClassComment> onlineClassCommentList = this.jdbcTemplate.query(getQuery2, ((rs, rowNum) ->
+                new ClassComment(
                         rs.getString("userName"),
                         rs.getString("userImg"),
                         rs.getString("userComment"),
@@ -171,7 +171,7 @@ public class ClassDao {
         return getOnlineClass;
     }
 
-    public List<OnlineClassReviews> getOnlineClassReview(long userId, long onlineClassId) {
+    public List<ClassReviews> getOnlineClassReview(long userId, long onlineClassId) {
 
         String getReviewsQuery = "select OCR.classReviewId, OCRI.imgUrl, U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
                 "from OnlineClassReview OCR\n" +
@@ -179,8 +179,8 @@ public class ClassDao {
                 "left outer join (select classReviewId, imgUrl from OnlineClassReviewImg group by (classReviewId)) OCRI using(classReviewId)\n" +
                 "where OCR.onlineClassId = ? order by (classReviewId) desc";
 
-        List<OnlineClassReviews> onlineClassReviewList = this.jdbcTemplate.query(getReviewsQuery, ((rs, rowNum) ->
-                new OnlineClassReviews(
+        List<ClassReviews> onlineClassReviewList = this.jdbcTemplate.query(getReviewsQuery, ((rs, rowNum) ->
+                new ClassReviews(
                         rs.getLong("classReviewId"),
                         rs.getString("imgUrl"),
                         rs.getString("nickName"),
@@ -232,5 +232,80 @@ public class ClassDao {
         GetOfflineClasses getOfflineClasses = new GetOfflineClasses(classCategoryList, userAddressName,
                 nearOfflineClassList, newOfflineClassList);
         return getOfflineClasses;
+    }
+
+    public int checkOfflineClass(long offlineClassId) {
+        String checkQuery = "select exists (select offlineClassId from OfflineClass where offlineClassId=?)";
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, offlineClassId);
+    }
+
+    public GetOfflineClass getOfflineClass(long userId, long offlineClassId) {
+        String getOfflineClassQuery = "select CC.categoryName, OC.title, OC.price, OC.discountRate, round(OC.price-(OC.price*OC.discountRate/100), -2) as finalPrice,\n" +
+                "       case when OC.level=1 then '쉬움' when OC.level=2 then '보통' else '어려움' end as level, concat(OC.timeSpend, '시간') as timeSpend,\n" +
+                "       concat(OC.maxCapacity, '명') as maxCapacity, if(OCL.status=1, true, false) as userLike, OCL1.countLike, W.writerId,\n" +
+                "       W.profileImg, W.nickName, OC.contents, OC.address\n" +
+                "\n" +
+                "from OfflineClass OC\n" +
+                "inner join ClassCategory CC using(categoryId)\n" +
+                "left outer join (select offlineClassId, status from OfflineClassLike where userId = ?) OCL using (offlineClassId)\n" +
+                "left outer join (select offlineClassId, count(classLikeId) as countLike from OfflineClassLike group by (offlineClassId)) OCL1 using(offlineClassId)\n" +
+                "inner join Writer W using(writerId)\n" +
+                "where offlineClassId = ?";
+        Object[] params = new Object[] {userId, offlineClassId};
+
+        GetOfflineClass getOfflineClass = this.jdbcTemplate.queryForObject(getOfflineClassQuery, (rs, rowNum) -> new GetOfflineClass(
+                rs.getString("categoryName"),
+                rs.getString("title"),
+                rs.getInt("price"),
+                rs.getInt("discountRate"),
+                rs.getInt("finalPrice"),
+                rs.getString("level"),
+                rs.getString("timeSpend"),
+                rs.getString("maxCapacity"),
+                rs.getBoolean("userLike"),
+                rs.getInt("countLike"),
+                rs.getLong("writerId"),
+                rs.getString("profileImg"),
+                rs.getString("nickName"),
+                rs.getString("contents"),
+                rs.getString("address")), params);
+
+        String getClassImgQuery = "select imgUrl from OfflineClassImg where offlineClassId=?";
+        List<String> classImgList = this.jdbcTemplate.query(getClassImgQuery, (rs, rowNum) -> rs.getString("imgUrl"), offlineClassId);
+        getOfflineClass.setClassImgList(classImgList);
+
+        String getReviewQuery = "select OCR.classReviewId, OCRI.imgUrl, U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
+                "from OfflineClassReview OCR\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join (select classReviewId, imgUrl from OfflineClassReviewImg group by (classReviewId)) OCRI using(classReviewId)\n" +
+                "where OCR.offlineClassId = ? order by (classReviewId) desc limit 5";
+
+        List<ClassReviews> classReviewsList = this.jdbcTemplate.query(getReviewQuery, (rs, rowNum) -> new ClassReviews(
+                rs.getLong("classReviewId"),
+                rs.getString("imgUrl"),
+                rs.getString("nickName"),
+                rs.getString("profileImg"),
+                rs.getString("createAt"),
+                rs.getInt("rating"),
+                rs.getString("contents")), offlineClassId);
+        getOfflineClass.setClassReviewsList(classReviewsList);
+
+        String getCommentQuery = "select U.nickName as userName, U.profileImg as userImg, OC.contents as userComment,\n" +
+                "       W.nickName as writerName, W.profileImg as writerImg, OWC.contents as writerComment\n" +
+                "from OfflineComment OC\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join OfflineWriterComment OWC using (commentId)\n" +
+                "inner join Writer W using(writerId)\n" +
+                "where offlineClassId = ?";
+        List<ClassComment> classCommentList = this.jdbcTemplate.query(getCommentQuery, (rs, rowNum) -> new ClassComment(
+                rs.getString("userName"),
+                rs.getString("userImg"),
+                rs.getString("userComment"),
+                rs.getString("writerName"),
+                rs.getString("writerImg"),
+                rs.getString("writerComment")), offlineClassId);
+        getOfflineClass.setClassCommentList(classCommentList);
+
+        return getOfflineClass;
     }
 }

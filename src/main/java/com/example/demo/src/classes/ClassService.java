@@ -1,10 +1,7 @@
 package com.example.demo.src.classes;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.classes.model.GetOfflineClasses;
-import com.example.demo.src.classes.model.GetOnlineClass;
-import com.example.demo.src.classes.model.GetOnlineClasses;
-import com.example.demo.src.classes.model.OnlineClassReviews;
+import com.example.demo.src.classes.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.FAILED_TO_SEARCH_ONLINE_CLASS;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -55,9 +51,9 @@ public class ClassService {
         }
     }
 
-    public List<OnlineClassReviews> getOnlineClassReview(long userId, long onlineClassId) throws BaseException {
+    public List<ClassReviews> getOnlineClassReview(long userId, long onlineClassId) throws BaseException {
         try {
-            List<OnlineClassReviews> onlineClassReviewsList = classDao.getOnlineClassReview(userId, onlineClassId);
+            List<ClassReviews> onlineClassReviewsList = classDao.getOnlineClassReview(userId, onlineClassId);
             return onlineClassReviewsList;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -71,5 +67,19 @@ public class ClassService {
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public GetOfflineClass getOfflineClass(long userId, long offlineClassId) throws BaseException {
+        if(classDao.checkOfflineClass(offlineClassId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_CLASS);
+        }
+
+        try {
+            GetOfflineClass getOfflineClass = classDao.getOfflineClass(userId, offlineClassId);
+            return getOfflineClass;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
     }
 }

@@ -2,10 +2,7 @@ package com.example.demo.src.classes;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.classes.model.GetOfflineClasses;
-import com.example.demo.src.classes.model.GetOnlineClass;
-import com.example.demo.src.classes.model.GetOnlineClasses;
-import com.example.demo.src.classes.model.OnlineClassReviews;
+import com.example.demo.src.classes.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,15 +66,15 @@ public class ClassController {
 
     @ResponseBody
     @GetMapping("/online-classes/{userId}/{onClassId}/reviews")
-    public BaseResponse<List<OnlineClassReviews>> getOnlineClassReview(@PathVariable("userId") long userId,
-                                                                       @PathVariable("onClassId") long onlineClassId) {
+    public BaseResponse<List<ClassReviews>> getOnlineClassReview(@PathVariable("userId") long userId,
+                                                                 @PathVariable("onClassId") long onlineClassId) {
         try{
             long userIdByJwt = jwtService.getUserIdx();
             if (userIdByJwt != userId) {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            List<OnlineClassReviews> onlineClassReviewsList = classService.getOnlineClassReview(userId, onlineClassId);
+            List<ClassReviews> onlineClassReviewsList = classService.getOnlineClassReview(userId, onlineClassId);
             return new BaseResponse<>(onlineClassReviewsList);
 
         } catch(BaseException exception){
@@ -96,6 +93,24 @@ public class ClassController {
 
             GetOfflineClasses getOfflineClasses = classService.getOfflineClasses(userId);
             return new BaseResponse<>(getOfflineClasses);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/{offClassId}")
+    public BaseResponse<GetOfflineClass> getOfflineClass(@PathVariable("userId") long userId,
+                                                         @PathVariable("offClassId") long offlineClassId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+           GetOfflineClass getOfflineClass = classService.getOfflineClass(userId, offlineClassId);
+            return new BaseResponse<>(getOfflineClass);
 
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());

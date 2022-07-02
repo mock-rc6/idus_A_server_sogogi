@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class OnlineClassReviews {
+public class ClassReviews {
     private long reviewId;
     private String reviewImg;
     private String userName;
