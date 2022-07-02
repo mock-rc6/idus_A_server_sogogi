@@ -395,4 +395,12 @@ public class ProductDao {
 
         return commentList;
     }
+
+    public List<Category> getCategories(long userId) {
+
+        String getCategoriesQuery = "select categoryId, categoryName from ProductCategory";
+        return this.jdbcTemplate.query(getCategoriesQuery, (rs, rowNum) -> new Category(
+                rs.getLong("categoryId"),
+                rs.getString("categoryName")));
+    }
 }

@@ -118,4 +118,13 @@ public class ClassService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetCategories getCategories(long userId) throws BaseException {
+        try {
+            GetCategories getCategories = classDao.getCategories(userId);
+            return getCategories;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -173,5 +173,20 @@ public class ClassController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/categories")
+    public BaseResponse<GetCategories> getCategories(@PathVariable("userId") long userId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
 
+            GetCategories getCategories = classService.getCategories(userId);
+            return new BaseResponse<>(getCategories);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }

@@ -38,8 +38,8 @@ com/example/demo/src/test/TestController.java
  com.example.demo.src.test.TestController
 com/example/demo/src/user/model/PostLoginReq.java
  com.example.demo.src.user.model.PostLoginReq
-com/example/demo/src/products/ProductDao.java
- com.example.demo.src.products.ProductDao
+com/example/demo/src/products/model/Category.java
+ com.example.demo.src.products.model.Category
 com/example/demo/src/products/model/RealTimeProducts.java
  com.example.demo.src.products.model.RealTimeProducts
 com/example/demo/config/secret/Secret.java
@@ -96,9 +96,17 @@ com/example/demo/src/products/ProductService.java
  com.example.demo.src.products.ProductService
 com/example/demo/src/user/UserController.java
  com.example.demo.src.user.UserController
+com/example/demo/src/products/ProductDao.java
+ com.example.demo.src.products.ProductDao
+com/example/demo/src/classes/model/GetCategories.java
+ com.example.demo.src.classes.model.GetCategories
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
+com/example/demo/src/classes/model/Category.java
+ com.example.demo.src.classes.model.Category
 com/example/demo/src/classes/ClassDao.java
  com.example.demo.src.classes.ClassDao
 com/example/demo/src/classes/ClassService.java
  com.example.demo.src.classes.ClassService
+com/example/demo/src/classes/model/Address.java
+ com.example.demo.src.classes.model.Address

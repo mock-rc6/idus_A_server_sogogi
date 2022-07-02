@@ -384,4 +384,18 @@ public class ClassDao {
     }
 
 
+    public GetCategories getCategories(long userId) {
+
+        String getCategoriesQuery = "select categoryId, categoryName from ClassCategory";
+        List<Category> categoryList = this.jdbcTemplate.query(getCategoriesQuery, (rs, rowNum) -> new Category(
+                rs.getLong("categoryId"),
+                rs.getString("categoryName")));
+
+        String getAddressQuery = "select addressId, addressName from Address";
+        List<Address> addressList = this.jdbcTemplate.query(getAddressQuery, (rs, rowNum) -> new Address(
+                rs.getLong("addressId"),
+                rs.getString("addressName")));
+
+        return new GetCategories(categoryList, addressList);
+    }
 }

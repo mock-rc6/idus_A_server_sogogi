@@ -125,4 +125,13 @@ public class ProductService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<Category> getCategories(long userId) throws BaseException {
+        try {
+            List<Category> categoryList = productDao.getCategories(userId);
+            return categoryList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
