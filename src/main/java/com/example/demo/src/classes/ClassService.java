@@ -1,6 +1,7 @@
 package com.example.demo.src.classes;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.classes.model.GetOfflineClasses;
 import com.example.demo.src.classes.model.GetOnlineClass;
 import com.example.demo.src.classes.model.GetOnlineClasses;
 import com.example.demo.src.classes.model.OnlineClassReviews;
@@ -58,6 +59,15 @@ public class ClassService {
         try {
             List<OnlineClassReviews> onlineClassReviewsList = classDao.getOnlineClassReview(userId, onlineClassId);
             return onlineClassReviewsList;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetOfflineClasses getOfflineClasses(long userId) throws BaseException {
+        try {
+            GetOfflineClasses getOfflineClasses = classDao.getOfflineClasses(userId);
+            return getOfflineClasses;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

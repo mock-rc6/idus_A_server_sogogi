@@ -84,9 +84,17 @@ com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
 com/example/demo/src/classes/model/OnlineClassReviews.java
  com.example.demo.src.classes.model.OnlineClassReviews
+com/example/demo/src/classes/model/ClassCategory.java
+ com.example.demo.src.classes.model.ClassCategory
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
+com/example/demo/src/classes/model/NewOfflineClass.java
+ com.example.demo.src.classes.model.NewOfflineClass
+com/example/demo/src/classes/model/GetOfflineClasses.java
+ com.example.demo.src.classes.model.GetOfflineClasses
 com/example/demo/src/classes/ClassDao.java
  com.example.demo.src.classes.ClassDao
 com/example/demo/src/classes/ClassService.java
  com.example.demo.src.classes.ClassService
+com/example/demo/src/classes/model/NearOfflineClass.java
+ com.example.demo.src.classes.model.NearOfflineClass

@@ -190,4 +190,47 @@ public class ClassDao {
                         rs.getString("contents"))), onlineClassId );
         return onlineClassReviewList;
     }
+
+    public GetOfflineClasses getOfflineClasses(long userId) {
+
+        String getClassCategory = "select categoryId, categoryName from ClassCategory";
+        List<ClassCategory> classCategoryList = this.jdbcTemplate.query(getClassCategory, ((rs, rowNum) ->
+                new ClassCategory(rs.getLong("categoryId"), rs.getString("categoryName"))));
+
+        String getUserAddressQuery = "select address from User where userId=?";
+        String userAddressName = this.jdbcTemplate.queryForObject(getUserAddressQuery, String.class, userId);
+
+        String getNearOfflineClasses = "select OC.offlineClassId, OCI.imgUrl, OC.address, CC.categoryName, OC.title, OC.rating, OCR.countReview\n" +
+                "from OfflineClass OC\n" +
+                "inner join ClassCategory CC using (categoryId)\n" +
+                "inner join (select offlineClassId, imgUrl from OfflineClassImg group by (offlineClassId)) OCI using (offlineClassId)\n" +
+                "left outer join (select offlineClassId, count(classReviewId) as countReview from OfflineClassReview group by (offlineClassId)) OCR using(offlineClassId)\n" +
+                "where OC.address=?";
+        List<NearOfflineClass> nearOfflineClassList = this.jdbcTemplate.query(getNearOfflineClasses,
+                ((rs, rowNum) -> new NearOfflineClass(
+                        rs.getLong("offlineClassId"),
+                        rs.getString("imgUrl"),
+                        rs.getString("address"),
+                        rs.getString("categoryName"),
+                        rs.getString("title"),
+                        rs.getDouble("rating"),
+                        rs.getInt("countReview"))), userAddressName);
+
+        String getNewOfflineClasses = "select OC.offlineClassId, OCI.imgUrl, OC.address, CC.categoryName, OC.title\n" +
+                "from OfflineClass OC\n" +
+                "inner join ClassCategory CC using (categoryId)\n" +
+                "inner join (select offlineClassId, imgUrl from OfflineClassImg group by (offlineClassId)) OCI using (offlineClassId)\n" +
+                "order by (offlineClassId) desc";
+        List<NewOfflineClass> newOfflineClassList = this.jdbcTemplate.query(getNewOfflineClasses, ((rs, rowNum) ->
+                new NewOfflineClass(
+                        rs.getLong("offlineClassId"),
+                        rs.getString("imgUrl"),
+                        rs.getString("address"),
+                        rs.getString("categoryName"),
+                        rs.getString("title"))));
+
+        GetOfflineClasses getOfflineClasses = new GetOfflineClasses(classCategoryList, userAddressName,
+                nearOfflineClassList, newOfflineClassList);
+        return getOfflineClasses;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.demo.src.classes;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.classes.model.GetOfflineClasses;
 import com.example.demo.src.classes.model.GetOnlineClass;
 import com.example.demo.src.classes.model.GetOnlineClasses;
 import com.example.demo.src.classes.model.OnlineClassReviews;
@@ -78,6 +79,23 @@ public class ClassController {
 
             List<OnlineClassReviews> onlineClassReviewsList = classService.getOnlineClassReview(userId, onlineClassId);
             return new BaseResponse<>(onlineClassReviewsList);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}")
+    public BaseResponse<GetOfflineClasses> getOfflineClasses(@PathVariable("userId") long userId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            GetOfflineClasses getOfflineClasses = classService.getOfflineClasses(userId);
+            return new BaseResponse<>(getOfflineClasses);
 
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
