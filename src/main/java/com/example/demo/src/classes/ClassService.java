@@ -82,4 +82,14 @@ public class ClassService {
         }
 
     }
+
+    public List<ClassReviews> getOfflineClassReview(long userId, long offlineClassId) throws BaseException {
+        try {
+            List<ClassReviews> offlineClassReviewsList = classDao.getOfflineClassReview(userId, offlineClassId);
+            return offlineClassReviewsList;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
 }

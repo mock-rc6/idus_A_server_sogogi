@@ -308,4 +308,25 @@ public class ClassDao {
 
         return getOfflineClass;
     }
+
+    public List<ClassReviews> getOfflineClassReview(long userId, long offlineClassId) {
+
+        String getReviewsQuery = "select OCR.classReviewId, OCRI.imgUrl, U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
+                "from OfflineClassReview OCR\n" +
+                "inner join User U using(userId)\n" +
+                "left outer join (select classReviewId, imgUrl from OfflineClassReviewImg group by (classReviewId)) OCRI using(classReviewId)\n" +
+                "where OCR.offlineClassId = ? order by (classReviewId) desc";
+
+        List<ClassReviews> offlineClassReviewList = this.jdbcTemplate.query(getReviewsQuery, ((rs, rowNum) ->
+                new ClassReviews(
+                        rs.getLong("classReviewId"),
+                        rs.getString("imgUrl"),
+                        rs.getString("nickName"),
+                        rs.getString("profileImg"),
+                        rs.getString("createAt"),
+                        rs.getInt("rating"),
+                        rs.getString("contents"))), offlineClassId );
+        return offlineClassReviewList;
+
+    }
 }

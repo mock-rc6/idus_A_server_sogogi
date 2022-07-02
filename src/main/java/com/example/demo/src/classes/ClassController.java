@@ -117,4 +117,22 @@ public class ClassController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/{offClassId}/reviews")
+    public BaseResponse<List<ClassReviews>> getOfflineClassReview(@PathVariable("userId") long userId,
+                                                                 @PathVariable("offClassId") long offlineClassId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            List<ClassReviews> offlineClassReviewsList = classService.getOfflineClassReview(userId, offlineClassId);
+            return new BaseResponse<>(offlineClassReviewsList);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
