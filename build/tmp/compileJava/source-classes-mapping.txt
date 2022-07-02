@@ -24,10 +24,10 @@ com/example/demo/src/user/UserDao.java
  com.example.demo.src.user.UserDao
 com/example/demo/src/classes/model/GetOnlineClasses.java
  com.example.demo.src.classes.model.GetOnlineClasses
-com/example/demo/config/BaseResponseStatus.java
- com.example.demo.config.BaseResponseStatus
-com/example/demo/src/products/ProductService.java
- com.example.demo.src.products.ProductService
+com/example/demo/src/classes/model/ClassComment.java
+ com.example.demo.src.classes.model.ClassComment
+com/example/demo/src/classes/model/GetOfflineClass.java
+ com.example.demo.src.classes.model.GetOfflineClass
 com/example/demo/src/WebSecurityConfig.java
  com.example.demo.src.WebSecurityConfig
 com/example/demo/src/classes/model/GetOfflineClasses.java
@@ -50,20 +50,20 @@ com/example/demo/src/products/model/GetProductsNew.java
  com.example.demo.src.products.model.GetProductsNew
 com/example/demo/src/user/model/PostUserRes.java
  com.example.demo.src.user.model.PostUserRes
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
-com/example/demo/config/BaseResponse.java
- com.example.demo.config.BaseResponse
-com/example/demo/src/products/ProductController.java
- com.example.demo.src.products.ProductController
+com/example/demo/src/classes/model/ClassCategory.java
+ com.example.demo.src.classes.model.ClassCategory
+com/example/demo/src/classes/model/ClassReviews.java
+ com.example.demo.src.classes.model.ClassReviews
+com/example/demo/src/products/model/GetProductsRes.java
+ com.example.demo.src.products.model.GetProductsRes
 com/example/demo/src/classes/model/NewOpenClasses.java
  com.example.demo.src.classes.model.NewOpenClasses
 com/example/demo/src/products/model/GetProductDetail.java
  com.example.demo.src.products.model.GetProductDetail
 com/example/demo/src/user/model/User.java
  com.example.demo.src.user.model.User
-com/example/demo/src/user/UserService.java
- com.example.demo.src.user.UserService
+com/example/demo/src/classes/model/NewOfflineClass.java
+ com.example.demo.src.classes.model.NewOfflineClass
 com/example/demo/src/classes/model/NearOfflineClass.java
  com.example.demo.src.classes.model.NearOfflineClass
 com/example/demo/src/classes/model/BestReview.java
@@ -74,26 +74,28 @@ com/example/demo/src/products/model/Comment.java
  com.example.demo.src.products.model.Comment
 com/example/demo/src/products/model/GetProductsRealTime.java
  com.example.demo.src.products.model.GetProductsRealTime
-com/example/demo/config/BaseException.java
- com.example.demo.config.BaseException
-com/example/demo/DemoApplication.java
- com.example.demo.DemoApplication
-com/example/demo/src/products/model/GetProductsRes.java
- com.example.demo.src.products.model.GetProductsRes
-com/example/demo/utils/JwtService.java
- com.example.demo.utils.JwtService
-com/example/demo/src/classes/model/NewOfflineClass.java
- com.example.demo.src.classes.model.NewOfflineClass
-com/example/demo/src/classes/model/ClassCategory.java
- com.example.demo.src.classes.model.ClassCategory
-com/example/demo/src/classes/model/GetOfflineClass.java
- com.example.demo.src.classes.model.GetOfflineClass
-com/example/demo/src/classes/model/ClassReviews.java
- com.example.demo.src.classes.model.ClassReviews
-com/example/demo/src/classes/model/ClassComment.java
- com.example.demo.src.classes.model.ClassComment
 com/example/demo/src/classes/model/GetOnlineClass.java
  com.example.demo.src.classes.model.GetOnlineClass
+com/example/demo/DemoApplication.java
+ com.example.demo.DemoApplication
+com/example/demo/src/user/UserService.java
+ com.example.demo.src.user.UserService
+com/example/demo/config/BaseResponseStatus.java
+ com.example.demo.config.BaseResponseStatus
+com/example/demo/src/products/ProductController.java
+ com.example.demo.src.products.ProductController
+com/example/demo/src/classes/model/ClassReview.java
+ com.example.demo.src.classes.model.ClassReview
+com/example/demo/config/BaseException.java
+ com.example.demo.config.BaseException
+com/example/demo/config/BaseResponse.java
+ com.example.demo.config.BaseResponse
+com/example/demo/utils/JwtService.java
+ com.example.demo.utils.JwtService
+com/example/demo/src/products/ProductService.java
+ com.example.demo.src.products.ProductService
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
 com/example/demo/src/classes/ClassDao.java

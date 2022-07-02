@@ -61,6 +61,10 @@ public enum BaseResponseStatus {
     FAILED_TO_SEARCH_ONLINE_CLASS(false,3040,"존재하지 않는 온라인 클래스입니다."),
 
     FAILED_TO_SEARCH_OFFLINE_CLASS(false,3050,"존재하지 않는 오프라인 클래스입니다."),
+    
+    FAILED_TO_SEARCH_ONLINE_CLASS_REVIEW(false,3060,"존재하지 않는 온라인 클래스 수강후기입니다."),
+    
+    FAILED_TO_SEARCH_OFFLINE_CLASS_REVIEW(false,3070,"존재하지 않는 오프라인 클래스 참여후기입니다."),
 
 
 

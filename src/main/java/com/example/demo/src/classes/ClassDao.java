@@ -171,7 +171,7 @@ public class ClassDao {
         return getOnlineClass;
     }
 
-    public List<ClassReviews> getOnlineClassReview(long userId, long onlineClassId) {
+    public List<ClassReviews> getOnlineClassReviews(long userId, long onlineClassId) {
 
         String getReviewsQuery = "select OCR.classReviewId, OCRI.imgUrl, U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
                 "from OnlineClassReview OCR\n" +
@@ -309,7 +309,7 @@ public class ClassDao {
         return getOfflineClass;
     }
 
-    public List<ClassReviews> getOfflineClassReview(long userId, long offlineClassId) {
+    public List<ClassReviews> getOfflineClassReviews(long userId, long offlineClassId) {
 
         String getReviewsQuery = "select OCR.classReviewId, OCRI.imgUrl, U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
                 "from OfflineClassReview OCR\n" +
@@ -327,6 +327,61 @@ public class ClassDao {
                         rs.getInt("rating"),
                         rs.getString("contents"))), offlineClassId );
         return offlineClassReviewList;
-
     }
+
+    public int checkOnlineClassReviewExists(long onlineClassId, long reviewId) {
+        String checkQuery = "select exists (select classReviewId from OnlineClassReview where onlineClassId = ? and classReviewId = ?)";
+        Object[] params = new Object[] {onlineClassId, reviewId};
+
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
+    }
+
+    public ClassReview getOnlineClassReview(long userId, long onlineClassId, long reviewId) {
+        String getReviewImgQuery = "select imgUrl from OnlineClassReviewImg where classReviewId=?";
+        List<String> reviewImgList = this.jdbcTemplate.query(getReviewImgQuery, (rs, rowNum) -> rs.getString("imgUrl"), reviewId);
+
+        String getReviewQuery = "select U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
+                "from OnlineClassReview OCR\n" +
+                "inner join User U using (userId)\n" +
+                "where classReviewId = ?";
+
+        ClassReview classReview = this.jdbcTemplate.queryForObject(getReviewQuery, (rs, rowNum) -> new ClassReview(
+                rs.getString("nickName"),
+                rs.getString("profileImg"),
+                rs.getString("createAt"),
+                rs.getInt("rating"),
+                rs.getString("contents"),
+                reviewImgList), reviewId);
+
+        return classReview;
+    }
+
+    public int checkOfflineClassReviewExists(long offlineClassId, long reviewId) {
+        String checkQuery = "select exists (select classReviewId from OfflineClassReview where offlineClassId = ? and classReviewId = ?)";
+        Object[] params = new Object[] {offlineClassId, reviewId};
+
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
+    }
+
+    public ClassReview getOfflineClassReview(long userId, long offlineClassId, long reviewId) {
+        String getReviewImgQuery = "select imgUrl from OfflineClassReviewImg where classReviewId=?";
+        List<String> reviewImgList = this.jdbcTemplate.query(getReviewImgQuery, (rs, rowNum) -> rs.getString("imgUrl"), reviewId);
+
+        String getReviewQuery = "select U.nickName, U.profileImg, date_format(OCR.createAt, '%Y년 %c월 %e일') as createAt, OCR.rating, OCR.contents\n" +
+                "from OfflineClassReview OCR\n" +
+                "inner join User U using (userId)\n" +
+                "where classReviewId = ?";
+
+        ClassReview classReview = this.jdbcTemplate.queryForObject(getReviewQuery, (rs, rowNum) -> new ClassReview(
+                rs.getString("nickName"),
+                rs.getString("profileImg"),
+                rs.getString("createAt"),
+                rs.getInt("rating"),
+                rs.getString("contents"),
+                reviewImgList), reviewId);
+
+        return classReview;
+    }
+
+
 }

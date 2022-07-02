@@ -51,9 +51,9 @@ public class ClassService {
         }
     }
 
-    public List<ClassReviews> getOnlineClassReview(long userId, long onlineClassId) throws BaseException {
+    public List<ClassReviews> getOnlineClassReviews(long userId, long onlineClassId) throws BaseException {
         try {
-            List<ClassReviews> onlineClassReviewsList = classDao.getOnlineClassReview(userId, onlineClassId);
+            List<ClassReviews> onlineClassReviewsList = classDao.getOnlineClassReviews(userId, onlineClassId);
             return onlineClassReviewsList;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -83,13 +83,39 @@ public class ClassService {
 
     }
 
-    public List<ClassReviews> getOfflineClassReview(long userId, long offlineClassId) throws BaseException {
+    public List<ClassReviews> getOfflineClassReviews(long userId, long offlineClassId) throws BaseException {
         try {
-            List<ClassReviews> offlineClassReviewsList = classDao.getOfflineClassReview(userId, offlineClassId);
+            List<ClassReviews> offlineClassReviewsList = classDao.getOfflineClassReviews(userId, offlineClassId);
             return offlineClassReviewsList;
         }catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
 
+    }
+
+    public ClassReview getOnlineClassReview(long userId, long onlineClassId, long reviewId) throws  BaseException {
+        if(classDao.checkOnlineClassReviewExists(onlineClassId, reviewId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_ONLINE_CLASS_REVIEW);
+        }
+
+        try {
+            ClassReview classReview = classDao.getOnlineClassReview(userId, onlineClassId, reviewId);
+            return classReview;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public ClassReview getOfflineClassReview(long userId, long offlineClassId, long reviewId) throws  BaseException {
+        if(classDao.checkOfflineClassReviewExists(offlineClassId, reviewId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_CLASS_REVIEW);
+        }
+
+        try {
+            ClassReview classReview = classDao.getOfflineClassReview(userId, offlineClassId, reviewId);
+            return classReview;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }

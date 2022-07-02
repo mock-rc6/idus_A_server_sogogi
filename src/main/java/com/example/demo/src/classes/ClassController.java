@@ -66,7 +66,7 @@ public class ClassController {
 
     @ResponseBody
     @GetMapping("/online-classes/{userId}/{onClassId}/reviews")
-    public BaseResponse<List<ClassReviews>> getOnlineClassReview(@PathVariable("userId") long userId,
+    public BaseResponse<List<ClassReviews>> getOnlineClassReviews(@PathVariable("userId") long userId,
                                                                  @PathVariable("onClassId") long onlineClassId) {
         try{
             long userIdByJwt = jwtService.getUserIdx();
@@ -74,7 +74,7 @@ public class ClassController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            List<ClassReviews> onlineClassReviewsList = classService.getOnlineClassReview(userId, onlineClassId);
+            List<ClassReviews> onlineClassReviewsList = classService.getOnlineClassReviews(userId, onlineClassId);
             return new BaseResponse<>(onlineClassReviewsList);
 
         } catch(BaseException exception){
@@ -119,7 +119,7 @@ public class ClassController {
 
     @ResponseBody
     @GetMapping("/offline-classes/{userId}/{offClassId}/reviews")
-    public BaseResponse<List<ClassReviews>> getOfflineClassReview(@PathVariable("userId") long userId,
+    public BaseResponse<List<ClassReviews>> getOfflineClassReviews(@PathVariable("userId") long userId,
                                                                  @PathVariable("offClassId") long offlineClassId) {
         try{
             long userIdByJwt = jwtService.getUserIdx();
@@ -127,12 +127,51 @@ public class ClassController {
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
 
-            List<ClassReviews> offlineClassReviewsList = classService.getOfflineClassReview(userId, offlineClassId);
+            List<ClassReviews> offlineClassReviewsList = classService.getOfflineClassReviews(userId, offlineClassId);
             return new BaseResponse<>(offlineClassReviewsList);
 
         } catch(BaseException exception){
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    @ResponseBody
+    @GetMapping("/online-classes/{userId}/{onClassId}/{reviewId}")
+    public BaseResponse<ClassReview> getOnlineClassReview(@PathVariable("userId") long userId,
+                                                          @PathVariable("onClassId") long onlineClassId,
+                                                          @PathVariable("reviewId") long reviewId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            ClassReview classReview = classService.getOnlineClassReview(userId, onlineClassId, reviewId);
+            return new BaseResponse<>(classReview);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/{offClassId}/{reviewId}")
+    public BaseResponse<ClassReview> getOfflineClassReview(@PathVariable("userId") long userId,
+                                                          @PathVariable("offClassId") long offlineClassId,
+                                                          @PathVariable("reviewId") long reviewId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            ClassReview classReview = classService.getOfflineClassReview(userId, offlineClassId, reviewId);
+            return new BaseResponse<>(classReview);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 
 }
