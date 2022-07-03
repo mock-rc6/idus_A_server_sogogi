@@ -1,9 +1,8 @@
 package com.example.demo.src.user;
 
-import com.example.demo.src.user.model.PostLoginReq;
-import com.example.demo.src.user.model.PostLoginRes;
-import com.example.demo.src.user.model.PostUserReq;
-import com.example.demo.src.user.model.PostUserRes;
+import com.example.demo.src.products.model.GetCategoryProduct;
+import com.example.demo.src.user.model.*;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -118,6 +117,55 @@ public class UserController {
 
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserInfo> getUser(@PathVariable("userId") long userId)   {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetUserInfo getUserInfo = userService.getUser(userId);
+            return new BaseResponse<>(getUserInfo);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/{userId}/status")
+    public BaseResponse<String> deleteUser(@PathVariable("userId") long userId)  {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.deleteUser(userId);
+
+            String result = "아이디어스 회원 탈퇴 성공!";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{userId}/details")
+    public BaseResponse<GetUserDetail> getUserDetail(@PathVariable("userId") long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetUserDetail getUserDetail = userService.getUserDetail(userId);
+            return new BaseResponse<>(getUserDetail);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
 

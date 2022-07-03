@@ -1,6 +1,7 @@
 package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.products.model.Category;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -84,5 +87,32 @@ public class UserService {
 
 
 
+    }
+
+    public GetUserInfo getUser(long userId) throws BaseException {
+        try {
+            GetUserInfo getUserInfo = userDao.getUser(userId);
+            return getUserInfo;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteUser(long userId) throws BaseException {
+        try {
+             userDao.deleteUser(userId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetUserDetail getUserDetail(long userId) throws BaseException {
+        try {
+            GetUserDetail getUserDetail = userDao.getUserDetail(userId);
+            return getUserDetail;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }

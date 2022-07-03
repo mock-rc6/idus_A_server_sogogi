@@ -1,8 +1,6 @@
 package com.example.demo.src.user;
 
-import com.example.demo.src.user.model.PostLoginReq;
-import com.example.demo.src.user.model.PostUserReq;
-import com.example.demo.src.user.model.User;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -49,5 +47,37 @@ public class UserDao {
         String getPwdParam = postLoginReq.getEmail();
         return this.jdbcTemplate.queryForObject(getPwdQuery, (rs, rowNum) ->
                 new User(rs.getLong("userId"), rs.getString("password")), getPwdParam);
+    }
+
+    public GetUserInfo getUser(long userId) {
+        String getUserQuery = "select U.profileImg, case when U.grade = 1 then '아기손' when U.grade = 2 then '곰손' when U.grade = 3 then '은손' else '금손' end as grade, U.nickName, U.rewardPoint, UC.countCoupon\n" +
+                "from User U\n" +
+                "left outer join (select userId, count(couponId) as countCoupon from UserCoupon group by (userId)) UC using (userId)\n" +
+                "where userId = ?";
+        return this.jdbcTemplate.queryForObject(getUserQuery, (rs, rowNum) -> new GetUserInfo(
+                rs.getString("profileImg"),
+                rs.getString("grade"),
+                rs.getString("nickName"),
+                rs.getInt("rewardPoint"),
+                rs.getInt("countCoupon")), userId);
+    }
+
+    public void deleteUser(long userId) {
+        String deleteUserQuery = "update User set idus.User.status = 0 where userId = ?";
+        this.jdbcTemplate.update(deleteUserQuery, userId);
+    }
+
+    public GetUserDetail getUserDetail(long userId) {
+        String getUserQuery = "select profileImg, nickName, emailAddr, date_format(birthDay, '%Y년 %c월 %e일') as birthDay, if(isnull(gender), null, if(gender='F', '여성', '남성')) as gender, phoneNumber, address\n" +
+                "from User\n" +
+                "where userId = ?";
+        return this.jdbcTemplate.queryForObject(getUserQuery, (rs, rowNum) -> new GetUserDetail(
+                rs.getString("profileImg"),
+                rs.getString("nickName"),
+                rs.getString("emailAddr"),
+                rs.getString("birthDay"),
+                rs.getString("gender"),
+                rs.getString("phoneNumber"),
+                rs.getString("address")), userId);
     }
 }
