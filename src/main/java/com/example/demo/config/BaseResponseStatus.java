@@ -66,6 +66,10 @@ public enum BaseResponseStatus {
     
     FAILED_TO_SEARCH_OFFLINE_CLASS_REVIEW(false,3070,"존재하지 않는 오프라인 클래스 참여후기입니다."),
 
+    FAILED_TO_SEARCH_PRODUCT_CATEGORY(false,3100,"존재하지 않는 작품 카테고리입니다."),
+    FAILED_TO_SEARCH_OFFLINE_CATEGORY(false,3200,"존재하지 않는 오프라인 클래스 카테고리입니다."),
+    FAILED_TO_SEARCH_OFFLINE_ADDRESS(false,3300,"존재하지 않는 오프라인 클래스 주소입니다."),
+
 
 
     /**

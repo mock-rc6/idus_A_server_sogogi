@@ -189,4 +189,42 @@ public class ClassController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/categories/{categoryId}")
+    public BaseResponse<List<NearOfflineClass>> getCategoryClasses(@PathVariable("userId") long userId, @PathVariable("categoryId") long categoryId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            List<NearOfflineClass> getCategoryClasses = classService.getCategoryClasses(userId, categoryId);
+            return new BaseResponse<>(getCategoryClasses);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+
+    @ResponseBody
+    @GetMapping("/offline-classes/{userId}/address/{addressId}")
+    public BaseResponse<List<NearOfflineClass>> getAddressClasses(@PathVariable("userId") long userId, @PathVariable("addressId") long addressId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            List<NearOfflineClass> getAddressClasses = classService.getAddressClasses(userId, addressId);
+            return new BaseResponse<>(getAddressClasses);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
 }

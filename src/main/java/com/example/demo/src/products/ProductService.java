@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.FAILED_TO_SEARCH_PRODUCT;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -136,6 +135,10 @@ public class ProductService {
     }
 
     public List<GetCategoryProduct> getCategoryProducts(long userId, long categoryId, RequestParams params) throws BaseException {
+
+        if(productDao.checkCategory(categoryId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_PRODUCT_CATEGORY);
+        }
 
         try {
             List<GetCategoryProduct> categoryList;

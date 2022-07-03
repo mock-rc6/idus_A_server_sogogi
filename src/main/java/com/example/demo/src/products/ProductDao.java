@@ -1383,4 +1383,9 @@ public class ProductDao {
         return getCategoryProductList;
 
     }
+
+    public int checkCategory(long categoryId) {
+        String checkQuery = "select exists (select categoryId from ProductCategory where categoryId = ?)";
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, categoryId);
+    }
 }

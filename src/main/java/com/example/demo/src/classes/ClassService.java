@@ -127,4 +127,30 @@ public class ClassService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<NearOfflineClass> getCategoryClasses(long userId, long categoryId) throws BaseException {
+        if(classDao.checkCategory(categoryId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_CATEGORY);
+        }
+
+        try {
+            List<NearOfflineClass> getCategoryClasses = classDao.getCategoryClasses(userId, categoryId);
+            return getCategoryClasses;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<NearOfflineClass> getAddressClasses(long userId, long addressId) throws BaseException {
+        if(classDao.checkAddress(addressId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_ADDRESS);
+        }
+
+        try {
+            List<NearOfflineClass> getCategoryClasses = classDao.getAddressClasses(userId, addressId);
+            return getCategoryClasses;
+        }catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
