@@ -181,4 +181,22 @@ public class ProductController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/categories/{categoryId}")
+    public BaseResponse<List<GetCategoryProduct>> getCategoryProducts(@PathVariable("userId") long userId,
+                                                                      @PathVariable("categoryId") long categoryId,
+                                                                      @ModelAttribute RequestParams params) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetCategoryProduct> getCategoryProductList = productService.getCategoryProducts(userId, categoryId, params);
+            return new BaseResponse<>(getCategoryProductList);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }

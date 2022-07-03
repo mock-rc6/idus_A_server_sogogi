@@ -403,4 +403,984 @@ public class ProductDao {
                 rs.getLong("categoryId"),
                 rs.getString("categoryName")));
     }
+
+    public List<GetCategoryProduct> getCategoryProducts(long userId, long categoryId, RequestParams params) {
+
+        List<GetCategoryProduct> getCategoryProductList;
+        Object[] queryParams1 = new Object[] {userId, categoryId, params.getDis()};
+        Object[] queryParams2 = new Object[] {userId, categoryId, params.getMin(), params.getDis()};
+        Object[] queryParams3 = new Object[] {userId, categoryId, params.getMin(), params.getMax(), params.getDis()};
+
+        //무료배송 필터 OFF
+        if (params.getFree() == 0) {
+            //인기순 정렬
+            if(params.getSort() == 0) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //최신순 정렬
+            else if(params.getSort() == 1) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (productId) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //낮은 가격순 정렬
+            else if(params.getSort() == 2) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //높은 가격순 정렬
+            else {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+        }
+        //무료배송 필터 ON
+        else {
+            //인기순 정렬
+            if(params.getSort() == 0) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //최신순 정렬
+            else if(params.getSort() == 1) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //낮은 가격순 정렬
+            else if(params.getSort() == 2) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+            //높은 가격순 정렬
+            else {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                            "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                            "from Product P\n" +
+                            "inner join Writer W using (writerId)\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                            "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike"),
+                            rs.getString("nickName"),
+                            rs.getString("title"),
+                            rs.getInt("price"),
+                            rs.getInt("discountRate"),
+                            rs.getInt("finalPrice"),
+                            rs.getLong("rating"),
+                            rs.getInt("countReview"),
+                            rs.getString("lastReview")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike, W.nickName, P.title, P.price, P.discountRate,\n" +
+                                "       round(P.price-(P.price*P.discountRate/100), -2) as finalPrice, P.rating, PR.countReview, PR1.contents as lastReview\n" +
+                                "from Product P\n" +
+                                "inner join Writer W using (writerId)\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR using (productId)\n" +
+                                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR1 group by(productId)) PR1 using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike"),
+                                rs.getString("nickName"),
+                                rs.getString("title"),
+                                rs.getInt("price"),
+                                rs.getInt("discountRate"),
+                                rs.getInt("finalPrice"),
+                                rs.getLong("rating"),
+                                rs.getInt("countReview"),
+                                rs.getString("lastReview")),queryParams3);
+                    }
+                }
+            }
+        }
+
+        return getCategoryProductList;
+    }
+
+    public List<GetCategoryProduct> getCategoryProductsImg(long userId, long categoryId, RequestParams params) {
+        List<GetCategoryProduct> getCategoryProductList;
+        Object[] queryParams1 = new Object[] {userId, categoryId, params.getDis()};
+        Object[] queryParams2 = new Object[] {userId, categoryId, params.getMin(), params.getDis()};
+        Object[] queryParams3 = new Object[] {userId, categoryId, params.getMin(), params.getMax(), params.getDis()};
+
+        //무료배송 필터 OFF
+        if (params.getFree() == 0) {
+            //인기순 정렬
+            if(params.getSort() == 0) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (OP.countOrder) desc";
+
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //최신순 정렬
+            else if(params.getSort() == 1) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (productId) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //낮은 가격순 정렬
+            else if(params.getSort() == 2) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //높은 가격순 정렬
+            else {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+        }
+        //무료배송 필터 ON
+        else {
+            //인기순 정렬
+            if(params.getSort() == 0) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, count(orderedId) as countOrder from Ordered inner join OrderProduct using(orderProductId) group by (productId)) OP using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (OP.countOrder) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //최신순 정렬
+            else if(params.getSort() == 1) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (productId) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //낮은 가격순 정렬
+            else if(params.getSort() == 2) {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2))";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+            //높은 가격순 정렬
+            else {
+                //가격대 필터 OFF
+                if(params.getMin() == 0 && params.getMax() == 0) {
+                    String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                            "from Product P\n" +
+                            "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                            "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                            "where P.categoryId = ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                    getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                            rs.getLong("productId"),
+                            rs.getString("imgUrl"),
+                            rs.getBoolean("userLike")),queryParams1);
+                }
+                else {
+                    //2만원 이상
+                    if(params.getMax() == 0) {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) > ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams2);
+                    }
+                    else {
+                        String getProductsQuery = "select P.productId, PI.imgUrl, if(isnull(PL.status), false, true) as userLike\n" +
+                                "from Product P\n" +
+                                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                                "left outer join (select productId, status from ProductLike where userId = ?) PL using (productId)\n" +
+                                "where P.categoryId = ? and round(P.price-(P.price*P.discountRate/100), -2) between ? and ? and P.deliveryFee = 0 and P.discountRate >= ? order by (round(P.price-(P.price*P.discountRate/100), -2)) desc";
+                        getCategoryProductList = this.jdbcTemplate.query(getProductsQuery, (rs, rowNum) -> new GetCategoryProduct(
+                                rs.getLong("productId"),
+                                rs.getString("imgUrl"),
+                                rs.getBoolean("userLike")),queryParams3);
+                    }
+                }
+            }
+        }
+
+        return getCategoryProductList;
+
+    }
 }

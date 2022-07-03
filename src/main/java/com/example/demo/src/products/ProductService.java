@@ -134,4 +134,24 @@ public class ProductService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetCategoryProduct> getCategoryProducts(long userId, long categoryId, RequestParams params) throws BaseException {
+
+        try {
+            List<GetCategoryProduct> categoryList;
+
+            //이미지만 볼래요 X
+            if(params.getImg() == 0) {
+                categoryList = productDao.getCategoryProducts(userId, categoryId, params);
+            }
+            //이미지만 볼래요
+            else {
+                categoryList = productDao.getCategoryProductsImg(userId, categoryId, params);
+            }
+            return categoryList;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
