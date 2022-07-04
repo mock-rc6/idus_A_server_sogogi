@@ -12,12 +12,12 @@ com/example/demo/src/classes/model/GetCategories.java
  com.example.demo.src.classes.model.GetCategories
 com/example/demo/src/user/model/GetUserInfo.java
  com.example.demo.src.user.model.GetUserInfo
-com/example/demo/src/classes/ClassDao.java
- com.example.demo.src.classes.ClassDao
-com/example/demo/src/classes/model/GetOnlineClass.java
- com.example.demo.src.classes.model.GetOnlineClass
 com/example/demo/src/products/ProductDao.java
  com.example.demo.src.products.ProductDao
+com/example/demo/src/classes/model/GetOnlineClass.java
+ com.example.demo.src.classes.model.GetOnlineClass
+com/example/demo/src/user/model/PatchUserReq.java
+ com.example.demo.src.user.model.PatchUserReq
 com/example/demo/config/secret/Secret.java
  com.example.demo.config.secret.Secret
 com/example/demo/src/user/model/PostUserRes.java
@@ -96,27 +96,27 @@ com/example/demo/src/products/model/Comment.java
  com.example.demo.src.products.model.Comment
 com/example/demo/src/classes/model/Address.java
  com.example.demo.src.classes.model.Address
-com/example/demo/src/products/ProductController.java
- com.example.demo.src.products.ProductController
-com/example/demo/src/classes/ClassService.java
- com.example.demo.src.classes.ClassService
-com/example/demo/config/BaseResponse.java
- com.example.demo.config.BaseResponse
+com/example/demo/src/user/UserDao.java
+ com.example.demo.src.user.UserDao
+com/example/demo/src/user/UserService.java
+ com.example.demo.src.user.UserService
 com/example/demo/config/BaseResponseStatus.java
  com.example.demo.config.BaseResponseStatus
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
 com/example/demo/config/BaseException.java
  com.example.demo.config.BaseException
+com/example/demo/src/classes/ClassDao.java
+ com.example.demo.src.classes.ClassDao
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
 com/example/demo/src/products/ProductService.java
  com.example.demo.src.products.ProductService
-com/example/demo/src/user/model/PatchUserReq.java
- com.example.demo.src.user.model.PatchUserReq
-com/example/demo/src/user/UserDao.java
- com.example.demo.src.user.UserDao
-com/example/demo/src/user/UserService.java
- com.example.demo.src.user.UserService
 com/example/demo/src/user/UserController.java
  com.example.demo.src.user.UserController
+com/example/demo/src/classes/ClassService.java
+ com.example.demo.src.classes.ClassService
+com/example/demo/config/BaseResponse.java
+ com.example.demo.config.BaseResponse
+com/example/demo/src/products/ProductController.java
+ com.example.demo.src.products.ProductController

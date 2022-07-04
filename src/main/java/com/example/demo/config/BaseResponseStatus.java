@@ -76,6 +76,11 @@ public enum BaseResponseStatus {
     FAILED_TO_SEARCH_PRODUCT_CATEGORY(false,3100,"존재하지 않는 작품 카테고리입니다."),
     FAILED_TO_SEARCH_OFFLINE_CATEGORY(false,3200,"존재하지 않는 오프라인 클래스 카테고리입니다."),
     FAILED_TO_SEARCH_OFFLINE_ADDRESS(false,3300,"존재하지 않는 오프라인 클래스 주소입니다."),
+    
+    
+    DUPLICATED_PRODUCT_LIKE(false,3310,"중복되는 작품 찜입니다."),
+    DUPLICATED_ONLINE_LIKE(false,3320,"중복되는 온라인 클래스 찜입니다."),
+    DUPLICATED_OFFLINE_LIKE(false,3330,"중복되는 오프라인 클래스 찜입니다."),
 
 
 

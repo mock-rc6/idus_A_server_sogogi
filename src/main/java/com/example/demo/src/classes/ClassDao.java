@@ -444,4 +444,31 @@ public class ClassDao {
                 rs.getInt("countReview")), addressId);
         return getCategoryClasses;
     }
+
+    public int checkOnlineClassLike(long userId, long onlineClassId) {
+        String checkQuery = "select exists (select classLikeId from OnlineClassLike where userId = ? and onlineClassId = ?)";
+        Object[] params = new Object[] {userId, onlineClassId};
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
+    }
+
+    public int checkOfflineClassLike(long userId, long offlineClassId) {
+        String checkQuery = "select exists (select classLikeId from OfflineClassLike where userId = ? and offlineClassId = ?)";
+        Object[] params = new Object[] {userId, offlineClassId};
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
+    }
+
+    public void setOnlineClassLike(long userId, long onlineClassId) {
+        String setLikeQuery = "INSERT INTO OnlineClassLike (userId, onlineClassId) values (?, ?)";
+        Object[] params = new Object[] {userId, onlineClassId};
+
+        this.jdbcTemplate.update(setLikeQuery, params);
+    }
+
+    public void setOfflineClassLike(long userId, long offlineClassId) {
+        String setLikeQuery = "INSERT INTO OfflineClassLike (userId, offlineClassId) values (?, ?)";
+        Object[] params = new Object[] {userId, offlineClassId};
+
+        this.jdbcTemplate.update(setLikeQuery, params);
+    }
+
 }

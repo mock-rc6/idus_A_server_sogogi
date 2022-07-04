@@ -153,4 +153,34 @@ public class ClassService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void setOnlineClassLike(long userId, long onlineClassId) throws BaseException {
+        if(classDao.checkOnlineClass(onlineClassId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_ONLINE_CLASS);
+        }
+        if(classDao.checkOnlineClassLike(userId, onlineClassId) == 1) {
+            throw new BaseException(DUPLICATED_ONLINE_LIKE);
+        }
+
+        try {
+            classDao.setOnlineClassLike(userId, onlineClassId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void setOfflineClassLike(long userId, long offlineClassId) throws BaseException {
+        if(classDao.checkOfflineClass(offlineClassId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_CLASS);
+        }
+        if(classDao.checkOfflineClassLike(userId, offlineClassId) == 1) {
+            throw new BaseException(DUPLICATED_OFFLINE_LIKE);
+        }
+
+        try {
+            classDao.setOfflineClassLike(userId, offlineClassId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

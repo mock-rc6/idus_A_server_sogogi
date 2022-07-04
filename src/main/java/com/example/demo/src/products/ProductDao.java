@@ -1388,4 +1388,17 @@ public class ProductDao {
         String checkQuery = "select exists (select categoryId from ProductCategory where categoryId = ?)";
         return this.jdbcTemplate.queryForObject(checkQuery, int.class, categoryId);
     }
+
+    public void setProductLike(long userId, long productId) {
+        String setLikeQuery = "INSERT INTO ProductLike (userId, productId) values (?, ?)";
+        Object[] params = new Object[] {userId, productId};
+
+        this.jdbcTemplate.update(setLikeQuery, params);
+    }
+
+    public int checkLike(long userId, long productId) {
+        String checkQuery = "select exists (select productLikeId from ProductLike where userId = ? and productId = ?)";
+        Object[] params = new Object[] {userId, productId};
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
+    }
 }

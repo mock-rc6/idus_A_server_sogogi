@@ -157,4 +157,19 @@ public class ProductService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void setProductLike(long userId, long productId) throws BaseException {
+        if(productDao.checkProduct(productId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_PRODUCT);
+        }
+        if(productDao.checkLike(userId, productId) == 1) {
+            throw new BaseException(DUPLICATED_PRODUCT_LIKE);
+        }
+
+        try {
+            productDao.setProductLike(userId, productId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

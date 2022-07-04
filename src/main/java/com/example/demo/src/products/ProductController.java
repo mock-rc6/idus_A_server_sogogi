@@ -199,4 +199,25 @@ public class ProductController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/{userId}/{productId}/likes")
+    public BaseResponse<String> setProductLike(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            productService.setProductLike(userId, productId);
+            String result = "찜 목록에 추가되었습니다";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
 }

@@ -227,4 +227,40 @@ public class ClassController {
 
     }
 
+    @ResponseBody
+    @PostMapping("/online-classes/{userId}/{onClassId}/likes")
+    public BaseResponse<String> setOnlineClassLike(@PathVariable("userId") long userId, @PathVariable("onClassId") long onlineClassId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            classService.setOnlineClassLike(userId, onlineClassId);
+            String result = "찜 목록에 추가되었습니다";
+            return new BaseResponse<>(result);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/offline-classes/{userId}/{offClassId}/likes")
+    public BaseResponse<String> setOfflineClassLike(@PathVariable("userId") long userId, @PathVariable("offClassId") long offlineClassId) {
+        try{
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            classService.setOfflineClassLike(userId, offlineClassId);
+            String result = "찜 목록에 추가되었습니다";
+            return new BaseResponse<>(result);
+
+        } catch(BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
