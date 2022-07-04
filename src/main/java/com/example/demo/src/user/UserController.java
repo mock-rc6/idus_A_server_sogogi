@@ -167,5 +167,154 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @PatchMapping("/{userId}/profiles")
+    public BaseResponse<String> modifyUserProfile(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+        if(patchUserReq.getProfileImg().length() > 2083) {
+            return new BaseResponse<>(PATCH_USERS_OVERFLOW_URL);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserProfile(userId, patchUserReq.getProfileImg());
+            String result = "사용자 프로필 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+    @ResponseBody
+    @PatchMapping("/{userId}/names")
+    public BaseResponse<String> modifyUserName(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+        if(patchUserReq.getUserName() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_NAME);
+        }
+
+        if(patchUserReq.getUserName().length() > 20) {
+            return new BaseResponse<>(POST_USERS_OVER_LENGTH_NAME);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserName(userId, patchUserReq.getUserName());
+            String result = "사용자 이름 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/{userId}/emails")
+    public BaseResponse<String> modifyUserEmail(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+
+        if(patchUserReq.getEmail() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+
+        if(patchUserReq.getEmail().length() > 320) {
+            return new BaseResponse<>(POST_USERS_OVER_LENGTH_EMAIL);
+        }
+
+        String emailPattern = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$";
+        if(!Pattern.matches(emailPattern, patchUserReq.getEmail())) {
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserEmail(userId, patchUserReq.getEmail());
+            String result = "사용자 이메일 주소 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/{userId}/birthDays")
+    public BaseResponse<String> modifyUserBirthDay(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+
+        String birthDayPattern = "^\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
+        if(!Pattern.matches(birthDayPattern, patchUserReq.getBirthDay())) {
+            return new BaseResponse<>(PATCH_USERS_INVALID_BIRTHDAY);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserBirthDay(userId, patchUserReq.getBirthDay());
+            String result = "사용자 생일 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+//    @ResponseBody
+//    @PatchMapping("/{userId}/genders")
+//    public BaseResponse<String> modifyUserGender(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+//        if(patchUserReq.getGender() != "F" && patchUserReq.getGender() != "M") {
+//            return new BaseResponse<>(PATCH_USERS_INVALID_GENDER);
+//        }
+//
+//        System.out.println(patchUserReq.getGender());
+//
+//        try {
+//            long userIdByJwt = jwtService.getUserIdx();
+//            if (userIdByJwt != userId) {
+//                return new BaseResponse<>(INVALID_USER_JWT);
+//            }
+//            userService.modifyUserGender(userId, patchUserReq.getGender());
+//            String result = "사용자 성별 변경에 성공하였습니다.";
+//            return new BaseResponse<>(result);
+//
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
+
+    @ResponseBody
+    @PatchMapping("/{userId}/phoneNumbers")
+    public BaseResponse<String> modifyUserPhoneNumber(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+
+        if(patchUserReq.getPhoneNumber() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONENUMBER);
+        }
+
+        String phoneNumberPattern = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$";
+        if(!Pattern.matches(phoneNumberPattern, patchUserReq.getPhoneNumber())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PHONENUMBER);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserPhoneNumber(userId, patchUserReq.getPhoneNumber());
+            String result = "사용자 휴대폰 번호 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
 

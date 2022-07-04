@@ -115,4 +115,53 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void modifyUserProfile(long userId, String imgUrl) throws BaseException {
+        try {
+            userDao.modifyUserProfile(userId, imgUrl);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public void modifyUserName(long userId, String userName) throws BaseException {
+        try {
+            userDao.modifyUserName(userId, userName);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserEmail(long userId, String email) throws BaseException {
+        try {
+            userDao.modifyUserEmail(userId, email);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserBirthDay(long userId, String birthDay) throws BaseException {
+        try {
+            userDao.modifyUserBirthDay(userId, birthDay);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserGender(long userId, String gender) throws BaseException {
+        try {
+            userDao.modifyUserGender(userId, gender);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserPhoneNumber(long userId, String phoneNumber) throws BaseException {
+        try {
+            userDao.modifyUserPhoneNumber(userId, phoneNumber);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -39,6 +39,13 @@ public enum BaseResponseStatus {
 
     POST_USERS_EMPTY_PASSWORD(false,2050,"비밀 번호를 입력해주세요."),
     POST_USERS_INVALID_PASSWORD(false,2051,"비밀 번호는 영문+숫자+특수문자 8자 이상입니다."),
+    
+    
+    PATCH_USERS_OVERFLOW_URL(false,2060,"URL 최대길이를 넘어섰습니다."),
+
+    PATCH_USERS_INVALID_BIRTHDAY(false,2070,"잘못된 생일 형식입니다."),
+
+    PATCH_USERS_INVALID_GENDER(false,2080,"잘못된 성별 형식입니다."),
 
 
 

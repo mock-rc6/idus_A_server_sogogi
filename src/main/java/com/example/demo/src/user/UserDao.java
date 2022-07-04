@@ -63,7 +63,7 @@ public class UserDao {
     }
 
     public void deleteUser(long userId) {
-        String deleteUserQuery = "update User set idus.User.status = 0 where userId = ?";
+        String deleteUserQuery = "update User set status = 0 where userId = ?";
         this.jdbcTemplate.update(deleteUserQuery, userId);
     }
 
@@ -79,5 +79,41 @@ public class UserDao {
                 rs.getString("gender"),
                 rs.getString("phoneNumber"),
                 rs.getString("address")), userId);
+    }
+
+    public void modifyUserProfile(long userId, String imgUrl) {
+        String updateQuery = "update User set profileImg = ? where userId = ?";
+        Object[] params = new Object[] {imgUrl, userId};
+        this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public void modifyUserName(long userId, String userName) {
+        String updateQuery = "update User set nickName = ? where userId = ?";
+        Object[] params = new Object[] {userName, userId};
+        this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public void modifyUserEmail(long userId, String email) {
+        String updateQuery = "update User set emailAddr = ? where userId = ?";
+        Object[] params = new Object[] {email, userId};
+        this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public void modifyUserBirthDay(long userId, String birthDay) {
+        String updateQuery = "update User set birthDay = ? where userId = ?";
+        Object[] params = new Object[] {birthDay, userId};
+        this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public void modifyUserGender(long userId, String gender) {
+        String updateQuery = "update User set gender = ? where userId = ?";
+        Object[] params = new Object[] {gender, userId};
+        this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public void modifyUserPhoneNumber(long userId, String phoneNumber) {
+        String updateQuery = "update User set phoneNumber = ? where userId = ?";
+        Object[] params = new Object[] {phoneNumber, userId};
+        this.jdbcTemplate.update(updateQuery, params);
     }
 }
