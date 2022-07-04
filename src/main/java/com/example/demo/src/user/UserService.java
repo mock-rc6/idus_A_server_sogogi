@@ -149,7 +149,7 @@ public class UserService {
         }
     }
 
-    public void modifyUserGender(long userId, String gender) throws BaseException {
+    public void modifyUserGender(long userId, Character gender) throws BaseException {
         try {
             userDao.modifyUserGender(userId, gender);
         } catch (Exception exception) {

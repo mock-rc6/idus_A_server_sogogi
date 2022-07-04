@@ -105,9 +105,10 @@ public class UserDao {
         this.jdbcTemplate.update(updateQuery, params);
     }
 
-    public void modifyUserGender(long userId, String gender) {
+    public void modifyUserGender(long userId, Character gender) {
+        String genderParam = String.valueOf(gender);
         String updateQuery = "update User set gender = ? where userId = ?";
-        Object[] params = new Object[] {gender, userId};
+        Object[] params = new Object[] {genderParam, userId};
         this.jdbcTemplate.update(updateQuery, params);
     }
 

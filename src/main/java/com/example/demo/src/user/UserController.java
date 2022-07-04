@@ -266,28 +266,27 @@ public class UserController {
         }
     }
 
-//    @ResponseBody
-//    @PatchMapping("/{userId}/genders")
-//    public BaseResponse<String> modifyUserGender(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
-//        if(patchUserReq.getGender() != "F" && patchUserReq.getGender() != "M") {
-//            return new BaseResponse<>(PATCH_USERS_INVALID_GENDER);
-//        }
-//
-//        System.out.println(patchUserReq.getGender());
-//
-//        try {
-//            long userIdByJwt = jwtService.getUserIdx();
-//            if (userIdByJwt != userId) {
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            }
-//            userService.modifyUserGender(userId, patchUserReq.getGender());
-//            String result = "사용자 성별 변경에 성공하였습니다.";
-//            return new BaseResponse<>(result);
-//
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+    @ResponseBody
+    @PatchMapping("/{userId}/genders")
+    public BaseResponse<String> modifyUserGender(@PathVariable("userId") long userId, @RequestBody PatchUserReq patchUserReq) {
+        System.out.println("gender : " + patchUserReq.getGender());
+
+        if(patchUserReq.getGender() != 'F' && patchUserReq.getGender() != 'M') {
+            return new BaseResponse<>(PATCH_USERS_INVALID_GENDER);
+        }
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserGender(userId, patchUserReq.getGender());
+            String result = "사용자 성별 변경에 성공하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
     @ResponseBody
     @PatchMapping("/{userId}/phoneNumbers")

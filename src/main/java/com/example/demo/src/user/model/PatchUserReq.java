@@ -12,7 +12,7 @@ public class PatchUserReq {
     private String userName;
     private String email;
     private String birthDay;
-    private String gender;
+    private Character gender;
     private String phoneNumber;
     private String addressName;
 }
