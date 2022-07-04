@@ -183,4 +183,36 @@ public class ClassService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void deleteOnlineClassLike(long userId, long onlineClassId) throws BaseException {
+
+        if(classDao.checkOnlineClass(onlineClassId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_ONLINE_CLASS);
+        }
+        if(classDao.checkOnlineClassLike(userId, onlineClassId) == 0) {
+            throw new BaseException(EMPTY_ONLINE_LIKE);
+        }
+
+        try {
+            classDao.deleteOnlineClassLike(userId, onlineClassId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteOfflineClassLike(long userId, long offlineClassId) throws BaseException {
+
+        if(classDao.checkOfflineClass(offlineClassId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_OFFLINE_CLASS);
+        }
+        if(classDao.checkOfflineClassLike(userId, offlineClassId) == 0) {
+            throw new BaseException(EMPTY_OFFLINE_LIKE);
+        }
+
+        try {
+            classDao.deleteOfflineClassLike(userId, offlineClassId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

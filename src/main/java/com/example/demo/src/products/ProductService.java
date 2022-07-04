@@ -172,4 +172,19 @@ public class ProductService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void deleteProductLike(long userId, long productId) throws BaseException {
+        if(productDao.checkProduct(productId) == 0) {
+            throw new BaseException(FAILED_TO_SEARCH_PRODUCT);
+        }
+        if(productDao.checkLike(userId, productId) == 0) {
+            throw new BaseException(EMPTY_PRODUCT_LIKE);
+        }
+
+        try {
+            productDao.deleteProductLike(userId, productId);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

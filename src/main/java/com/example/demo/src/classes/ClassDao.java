@@ -471,4 +471,15 @@ public class ClassDao {
         this.jdbcTemplate.update(setLikeQuery, params);
     }
 
+    public void deleteOnlineClassLike(long userId, long onlineClassId) {
+        String deleteQuery = "delete from OnlineClassLike where userId = ? and onlineClassId = ?";
+        Object[] params = new Object[] {userId, onlineClassId};
+        this.jdbcTemplate.update(deleteQuery, params);
+    }
+
+    public void deleteOfflineClassLike(long userId, long offlineClassId) {
+        String deleteQuery = "delete from OfflineClassLike where userId = ? and offlineClassId = ?";
+        Object[] params = new Object[] {userId, offlineClassId};
+        this.jdbcTemplate.update(deleteQuery, params);
+    }
 }

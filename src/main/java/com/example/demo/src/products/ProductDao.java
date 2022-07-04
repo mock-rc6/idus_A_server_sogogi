@@ -1401,4 +1401,10 @@ public class ProductDao {
         Object[] params = new Object[] {userId, productId};
         return this.jdbcTemplate.queryForObject(checkQuery, int.class, params);
     }
+
+    public void deleteProductLike(long userId, long productId) {
+        String deleteQuery = "delete from ProductLike where userId = ? and productId = ?";
+        Object[] params = new Object[] {userId, productId};
+        this.jdbcTemplate.update(deleteQuery, params);
+    }
 }

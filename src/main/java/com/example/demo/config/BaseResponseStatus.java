@@ -79,8 +79,11 @@ public enum BaseResponseStatus {
     
     
     DUPLICATED_PRODUCT_LIKE(false,3310,"중복되는 작품 찜입니다."),
+    EMPTY_PRODUCT_LIKE(false,3311,"작품 찜 상태가 아닙니다."),
     DUPLICATED_ONLINE_LIKE(false,3320,"중복되는 온라인 클래스 찜입니다."),
+    EMPTY_ONLINE_LIKE(false,3321,"온라인 클래스 찜 상태가 아닙니다."),
     DUPLICATED_OFFLINE_LIKE(false,3330,"중복되는 오프라인 클래스 찜입니다."),
+    EMPTY_OFFLINE_LIKE(false,3331,"오프라인 클래스 찜 상태가 아닙니다."),
 
 
 
