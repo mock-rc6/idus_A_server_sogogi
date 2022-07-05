@@ -187,4 +187,15 @@ public class ProductService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+
+    public GetProductOption getProductOptions(long userId, long productId) throws BaseException {
+        try {
+            GetProductOption getProductOption = productDao.getProductOptions(userId, productId);
+            return getProductOption;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

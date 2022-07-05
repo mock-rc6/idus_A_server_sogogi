@@ -237,4 +237,23 @@ public class ProductController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/{productId}/options")
+    public BaseResponse<GetProductOption> getProductOptions(@PathVariable("userId") long userId, @PathVariable("productId") long productId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            GetProductOption getProductOption = productService.getProductOptions(userId, productId);
+            return new BaseResponse<>(getProductOption);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+
+    }
+
+
 }

@@ -1407,4 +1407,28 @@ public class ProductDao {
         Object[] params = new Object[] {userId, productId};
         this.jdbcTemplate.update(deleteQuery, params);
     }
+
+    public GetProductOption getProductOptions(long userId, long productId) {
+
+        List<ProductOption> productOptionList = new ArrayList<>();
+
+        String getOptionId = "select productOptionId from ProductOption where productId = ?";
+        List<Long> optionIdList = this.jdbcTemplate.query(getOptionId, (rs, row) -> new Long(rs.getLong("productOptionId")), productId);
+
+        String getOptionName = "select optionName from ProductOption where productId = ?";
+        List<String> optionNameList = this.jdbcTemplate.query(getOptionName, (rs, rowNum) -> rs.getString("optionName"), productId);
+
+        String getOptionDetail = "select productOptionDetailId, detailName, detailPrice from ProductOptionDetail where optionId = ?";
+        for(int i = 0; i < optionIdList.size(); i++) {
+            List<OptionDetail> optionDetailList = this.jdbcTemplate.query(getOptionDetail, (rs, rowNum) -> new OptionDetail(
+                    rs.getLong("productOptionDetailId"),
+                    rs.getString("detailName"),
+                    rs.getInt("detailPrice")), optionIdList.get(i));
+
+            ProductOption productOption = new ProductOption(optionIdList.get(i), optionNameList.get(i), optionDetailList);
+            productOptionList.add(productOption);
+        }
+
+        return new GetProductOption(productOptionList);
+    }
 }
