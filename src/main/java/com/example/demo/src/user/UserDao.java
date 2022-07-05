@@ -205,4 +205,29 @@ public class UserDao {
                 rs.getString("sendStatus")), params);
         return orderLists;
     }
+
+
+    public List<GetLikeProduct> getLikeProducts(long userId) {
+        String getLikeProductQuery = "select PL.productId, PI.imgUrl,W.nickName, P.title, P.price, P.discountRate, round(P.price-(P.price*P.discountRate/100)) as finalPrice,\n" +
+                "       P.rating, PR1.countReview, PR.contents\n" +
+                "from ProductLike PL\n" +
+                "inner join Product P using(productId)\n" +
+                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                "inner join Writer W using (writerId)\n" +
+                "left outer join (select productId, count(productReviewId) as countReview from ProductReview group by (productId)) PR1 using (productId)\n" +
+                "left outer join (select * from (select productReviewId, productId, contents from ProductReview order by (productReviewId) desc LIMIT 18446744073709551615) as PR group by(productId)) PR using (productId)\n" +
+                "where userId = ?";
+        List<GetLikeProduct> getLikeProductList = this.jdbcTemplate.query(getLikeProductQuery, (rs, rowNum) -> new GetLikeProduct(
+                rs.getLong("productId"),
+                rs.getString("imgUrl"),
+                rs.getString("nickName"),
+                rs.getString("title"),
+                rs.getInt("price"),
+                rs.getInt("discountRate"),
+                rs.getInt("finalPrice"),
+                rs.getDouble("rating"),
+                rs.getInt("countReview"),
+                rs.getString("contents")), userId);
+        return getLikeProductList;
+    }
 }

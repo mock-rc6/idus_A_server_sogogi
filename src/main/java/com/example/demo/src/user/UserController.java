@@ -333,7 +333,7 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/{userId}/order-list")
+    @GetMapping("/{userId}/order-lists")
     public BaseResponse<List<GetOrderList>> getOrderList(@PathVariable("userId") long userId) {
         try {
             long userIdByJwt = jwtService.getUserIdx();
@@ -348,7 +348,21 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/product-likes")
+    public BaseResponse<List<GetLikeProduct>> getLikeProducts(@PathVariable("userId") long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetLikeProduct> getLikeProductList = userService.getLikeProducts(userId);
+            return new BaseResponse<>(getLikeProductList);
 
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
 

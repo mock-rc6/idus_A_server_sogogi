@@ -182,4 +182,13 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetLikeProduct> getLikeProducts(long userId) throws BaseException {
+        try {
+            List<GetLikeProduct> getLikeProductList = userDao.getLikeProducts(userId);
+            return getLikeProductList;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
