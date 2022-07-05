@@ -230,4 +230,22 @@ public class UserDao {
                 rs.getString("contents")), userId);
         return getLikeProductList;
     }
+
+    public List<GetLikeOnlineClasses> getLikeOnlineClasses(long userId) {
+        String getLikeClassQuery = "select OCL.onlineClassId, OC.profileImg, CC.categoryName, case when OC.level=1 then '쉬움' when OC.level=2 then '보통' else '어려움' end as level,\n" +
+                "       OC.title, W.nickName\n" +
+                "from OnlineClassLike OCL\n" +
+                "inner join OnlineClass OC using (onlineClassId)\n" +
+                "inner join ClassCategory CC using (categoryId)\n" +
+                "inner join Writer W using (writerId)\n" +
+                "where userId = ?";
+        List<GetLikeOnlineClasses> getLikeOnlineClasses = this.jdbcTemplate.query(getLikeClassQuery, (rs, rowNum) -> new GetLikeOnlineClasses(
+                rs.getLong("onlineClassId"),
+                rs.getString("profileImg"),
+                rs.getString("categoryName"),
+                rs.getString("level"),
+                rs.getString("title"),
+                rs.getString("nickName")), userId);
+        return getLikeOnlineClasses;
+    }
 }

@@ -364,5 +364,21 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/online-class-likes")
+    public BaseResponse<List<GetLikeOnlineClasses>> getLikeOnlineClasses(@PathVariable("userId") long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetLikeOnlineClasses> getLikeOnlineClasses = userService.getLikeOnlineClasses(userId);
+            return new BaseResponse<>(getLikeOnlineClasses);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
 
