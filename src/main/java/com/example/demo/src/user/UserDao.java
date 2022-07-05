@@ -248,4 +248,22 @@ public class UserDao {
                 rs.getString("nickName")), userId);
         return getLikeOnlineClasses;
     }
+
+    public List<GetLikeOfflineClasses> getLikeOfflineClasses(long userId) {
+        String getLikeClassQuery = "select OCL.offlineClassId, OCI.imgUrl, OC.address, CC.categoryName, OC.title, OC.price\n" +
+                "from OfflineClassLike OCL\n" +
+                "inner join OfflineClass OC using (offlineClassId)\n" +
+                "inner join (select offlineClassId, imgUrl from OfflineClassImg group by (offlineClassId)) OCI using (offlineClassId)\n" +
+                "inner join ClassCategory CC using (categoryId)\n" +
+                "where userId = ?";
+
+        List<GetLikeOfflineClasses> getLikeOfflineClasses = this.jdbcTemplate.query(getLikeClassQuery, (rs, rowNum) -> new GetLikeOfflineClasses(
+                rs.getLong("offlineClassId"),
+                rs.getString("imgUrl"),
+                rs.getString("address"),
+                rs.getString("categoryName"),
+                rs.getString("title"),
+                rs.getInt("price")), userId);
+        return getLikeOfflineClasses;
+    }
 }

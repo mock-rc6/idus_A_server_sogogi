@@ -134,11 +134,13 @@ com/example/demo/src/user/model/GetOrderList.java
  com.example.demo.src.user.model.GetOrderList
 com/example/demo/src/user/model/GetLikeProduct.java
  com.example.demo.src.user.model.GetLikeProduct
+com/example/demo/src/user/model/GetLikeOnlineClasses.java
+ com.example.demo.src.user.model.GetLikeOnlineClasses
+com/example/demo/src/user/model/GetLikeOfflineClasses.java
+ com.example.demo.src.user.model.GetLikeOfflineClasses
 com/example/demo/src/user/UserDao.java
  com.example.demo.src.user.UserDao
 com/example/demo/src/user/UserService.java
  com.example.demo.src.user.UserService
-com/example/demo/src/user/model/GetLikeOnlineClasses.java
- com.example.demo.src.user.model.GetLikeOnlineClasses
 com/example/demo/src/user/UserController.java
  com.example.demo.src.user.UserController
