@@ -173,4 +173,13 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetOrderList> getOrderList(long userId) throws BaseException {
+        try {
+            List<GetOrderList> getOrderLists = userDao.getOrderList(userId);
+            return getOrderLists;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

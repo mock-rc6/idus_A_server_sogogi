@@ -177,4 +177,32 @@ public class UserDao {
 
         return new GetBasketProduct(countProduct, basketProductDetailList);
     }
+
+    public List<GetOrderList> getOrderList(long userId) {
+        String getOrderListQuery = "select OP.productId, date_format(O.createAt, '%Y.%m.%d') as orderAt,\n" +
+                "       (round(P.price-(P.price*P.discountRate/100), -2) + POD.addPrice)*O.orderCount as finalPrice, PI.imgUrl,\n" +
+                "       P.title, W.nickName, if(O.status=2, '작가 발송 완료', '발송 준비중') as sendStatus\n" +
+                "from Ordered O\n" +
+                "inner join OrderProduct OP using (orderProductId)\n" +
+                "inner join Product P using(productId)\n" +
+                "inner join (select orderProductId, sum(detailPrice) as addPrice\n" +
+                "    from OrderOption\n" +
+                "    inner join ProductOptionDetail using (productOptionDetailId)\n" +
+                "    inner join OrderProduct using(orderProductId) where orderProductId in (select orderProductId from Ordered where userId = ?)\n" +
+                "                                                  group by (orderProductId)) POD using(orderProductId)\n" +
+                "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                "inner join Writer W using (writerId)\n" +
+                "where userId = ?";
+        Object[] params = new Object[] {userId, userId};
+
+        List<GetOrderList> orderLists = this.jdbcTemplate.query(getOrderListQuery, (rs, rowNum) -> new GetOrderList(
+                rs.getLong("productId"),
+                rs.getString("orderAt"),
+                rs.getInt("finalPrice"),
+                rs.getString("imgUrl"),
+                rs.getString("title"),
+                rs.getString("nickName"),
+                rs.getString("sendStatus")), params);
+        return orderLists;
+    }
 }

@@ -332,5 +332,23 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/order-list")
+    public BaseResponse<List<GetOrderList>> getOrderList(@PathVariable("userId") long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetOrderList> getOrderLists = userService.getOrderList(userId);
+            return new BaseResponse<>(getOrderLists);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
 }
 
