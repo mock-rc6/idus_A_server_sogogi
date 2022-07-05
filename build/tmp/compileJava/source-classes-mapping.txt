@@ -96,8 +96,8 @@ com/example/demo/src/products/model/Comment.java
  com.example.demo.src.products.model.Comment
 com/example/demo/src/classes/model/Address.java
  com.example.demo.src.classes.model.Address
-com/example/demo/src/user/UserDao.java
- com.example.demo.src.user.UserDao
+com/example/demo/config/BaseException.java
+ com.example.demo.config.BaseException
 com/example/demo/src/products/model/GetProductOption.java
  com.example.demo.src.products.model.GetProductOption
 com/example/demo/src/products/model/OptionDetail.java
@@ -106,27 +106,33 @@ com/example/demo/src/products/model/ProductOption.java
  com.example.demo.src.products.model.ProductOption
 com/example/demo/src/classes/ClassService.java
  com.example.demo.src.classes.ClassService
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
+com/example/demo/src/products/ProductDao.java
+ com.example.demo.src.products.ProductDao
 com/example/demo/config/BaseResponse.java
  com.example.demo.config.BaseResponse
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
 com/example/demo/src/products/model/OrderProduct.java
  com.example.demo.src.products.model.OrderProduct
-com/example/demo/src/user/UserService.java
- com.example.demo.src.user.UserService
+com/example/demo/src/products/ProductService.java
+ com.example.demo.src.products.ProductService
 com/example/demo/config/BaseResponseStatus.java
  com.example.demo.config.BaseResponseStatus
 com/example/demo/src/classes/ClassController.java
  com.example.demo.src.classes.ClassController
 com/example/demo/src/products/model/OrderOption.java
  com.example.demo.src.products.model.OrderOption
-com/example/demo/config/BaseException.java
- com.example.demo.config.BaseException
-com/example/demo/src/products/ProductDao.java
- com.example.demo.src.products.ProductDao
-com/example/demo/src/products/ProductService.java
- com.example.demo.src.products.ProductService
+com/example/demo/src/user/UserDao.java
+ com.example.demo.src.user.UserDao
+com/example/demo/src/user/UserService.java
+ com.example.demo.src.user.UserService
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController
+com/example/demo/src/user/model/BasketProductDetail.java
+ com.example.demo.src.user.model.BasketProductDetail
+com/example/demo/src/user/model/BasketProductOption.java
+ com.example.demo.src.user.model.BasketProductOption
+com/example/demo/src/user/model/GetBasketProduct.java
+ com.example.demo.src.user.model.GetBasketProduct
 com/example/demo/src/products/ProductController.java
  com.example.demo.src.products.ProductController

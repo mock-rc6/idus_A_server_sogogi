@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.products.model.*;
 import com.example.demo.src.user.UserService;
 import com.example.demo.utils.JwtService;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -291,6 +292,5 @@ public class ProductController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
-
 
 }

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -116,5 +117,64 @@ public class UserDao {
         String updateQuery = "update User set phoneNumber = ? where userId = ?";
         Object[] params = new Object[] {phoneNumber, userId};
         this.jdbcTemplate.update(updateQuery, params);
+    }
+
+    public GetBasketProduct getBasketProducts(long userId) {
+
+        String getBasketIdQuery = "select basketId from Basket where userId = ?";
+        long basketId = this.jdbcTemplate.queryForObject(getBasketIdQuery, long.class, userId);
+
+        String getCountProductQuery = "select count(basketDetailId) as countProduct from BasketDetail where basketId = ?";
+        int countProduct = this.jdbcTemplate.queryForObject(getCountProductQuery, int.class, basketId);
+
+        String getOrderProductIdQuery = "select orderProductId from BasketDetail where basketId = ?";
+        List<Long> orderProductId = this.jdbcTemplate.query(getOrderProductIdQuery,
+                (rs, rowNum) -> rs.getLong("orderProductId"), basketId);
+
+        List<BasketProductDetail> basketProductDetailList = new ArrayList<>();
+
+        for(int i = 0; i <orderProductId.size(); i++) {
+            String getOptionQuery = "select PO.optionName, POD.detailName\n" +
+                    "from OrderOption OO\n" +
+                    "inner join ProductOption PO using(productOptionId)\n" +
+                    "inner join ProductOptionDetail POD using(productOptionDetailId)\n" +
+                    "where orderProductId = ?";
+
+            List<BasketProductOption> basketProductOptionList = this.jdbcTemplate.query(getOptionQuery, (rs, rowNum) -> new BasketProductOption(
+                    rs.getString("optionName"),
+                    rs.getString("detailName")), orderProductId.get(i));
+
+            String getBasketProductQuery = "select PD.basketDetailId, W.writerId, W.nickName, PI.imgUrl, P.title, if(P.leftAmount=-1, '주문시 제작', concat(P.leftAmount,'개 남음')) as leftAmount,\n" +
+                    "       (round(P.price-(P.price*P.discountRate/100), -2) + POD.addPrice)*PD.orderCount as finalPrice, PD.orderCount,\n" +
+                    "       if((round(P.price-(P.price*P.discountRate/100), -2) + POD.addPrice)*PD.orderCount > P.freeAmount, 0, P.deliveryFee) as deliveryFee, P.freeAmount\n" +
+                    "from BasketDetail PD\n" +
+                    "inner join OrderProduct OP using (orderProductId)\n" +
+                    "inner join Product P using(productId)\n" +
+                    "inner join Writer W using (writerId)\n" +
+                    "inner join (select productId, imgUrl from ProductImg group by (productId)) PI using(productId)\n" +
+                    "inner join (select orderProductId, sum(detailPrice) as addPrice from OrderOption inner join ProductOptionDetail using (productOptionDetailId)\n" +
+                    "    inner join OrderProduct using(orderProductId) where orderProductId in (select orderProductId from BasketDetail where basketId = ?)\n" +
+                    "group by (orderProductId)) POD using(orderProductId)\n" +
+                    "where PD.orderProductId = ?";
+
+            Object[] params = new Object[] {basketId, orderProductId.get(i)};
+
+            BasketProductDetail basketProductDetail = this.jdbcTemplate.queryForObject(getBasketProductQuery, (rs, rowNum) -> new BasketProductDetail(
+                    rs.getLong("basketDetailId"),
+                    rs.getLong("writerId"),
+                    rs.getString("nickName"),
+                    rs.getString("imgUrl"),
+                    rs.getString("title"),
+                    rs.getString("leftAmount"),
+                    basketProductOptionList,
+                    rs.getInt("finalPrice"),
+                    rs.getInt("orderCount"),
+                    rs.getInt("deliveryFee"),
+                    rs.getInt("freeAmount")), params);
+
+            basketProductDetailList.add(basketProductDetail);
+        }
+
+        return new GetBasketProduct(countProduct, basketProductDetailList);
     }
 }

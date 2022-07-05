@@ -164,4 +164,13 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetBasketProduct getBasketProducts(long userId) throws BaseException {
+        try {
+             GetBasketProduct getBasketProduct = userDao.getBasketProducts(userId);
+             return getBasketProduct;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

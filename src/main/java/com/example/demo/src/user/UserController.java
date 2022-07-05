@@ -9,6 +9,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -315,7 +316,21 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/{userId}/baskets")
+    public BaseResponse<GetBasketProduct> getBasketProducts(@PathVariable("userId") long userId) {
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetBasketProduct getBasketProduct = userService.getBasketProducts(userId);
+            return new BaseResponse<>(getBasketProduct);
 
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
 
