@@ -47,6 +47,10 @@ public enum BaseResponseStatus {
 
     PATCH_USERS_INVALID_GENDER(false,2080,"잘못된 성별 형식입니다."),
 
+    POST_ADD_EMPTY_ORDER_PRODUCT(false,2100,"장바구니에 넣을 작품이 없습니다."),
+    POST_ADD_EMPTY_ORDER_AMOUNT(false,2110,"수량을 입력해주세요."),
+    POST_ADD_EMPTY_ORDER_PRODUCT_OPTION(false,2120,"작품의 추가 옵션 id를 입력해주세요."),
+    
 
 
 
@@ -84,6 +88,12 @@ public enum BaseResponseStatus {
     EMPTY_ONLINE_LIKE(false,3321,"온라인 클래스 찜 상태가 아닙니다."),
     DUPLICATED_OFFLINE_LIKE(false,3330,"중복되는 오프라인 클래스 찜입니다."),
     EMPTY_OFFLINE_LIKE(false,3331,"오프라인 클래스 찜 상태가 아닙니다."),
+
+
+    INVALID_PRODUCT_OPTION_COUNT(false,3350,"작품의 추가옵션을 모두 선택해야합니다."),
+    INVALID_PRODUCT_OPTION(false,3400,"잘못된 작품 추가옵션입니다."),
+    INVALID_PRODUCT_OPTION_DETAIL(false,3410,"잘못된 작품 추가옵션 상세입니다."),
+
 
 
 

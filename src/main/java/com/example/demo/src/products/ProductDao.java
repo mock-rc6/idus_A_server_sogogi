@@ -1431,4 +1431,47 @@ public class ProductDao {
 
         return new GetProductOption(productOptionList);
     }
+
+    public long checkProductOption(Long productOptionId) {
+        String checkQuery = "select productId from ProductOption where productOptionId=?";
+        return this.jdbcTemplate.queryForObject(checkQuery, (rs, rowNum) -> rs.getLong("productId"), productOptionId);
+    }
+
+
+    public long checkProductOptionDetail(Long optionDetailId) {
+        String checkQuery = "select optionId from ProductOptionDetail where productOptionDetailId=?";
+        return this.jdbcTemplate.queryForObject(checkQuery, (rs, rowNum) -> rs.getLong("optionId"), optionDetailId);
+    }
+
+    public void addBasketProducts(long userId, long productId, OrderProduct orderProduct) {
+        String insertQuery1 = "INSERT INTO OrderProduct (productId) values (?)";
+        this.jdbcTemplate.update(insertQuery1, productId);
+
+        String getOrderProductIdQuery = "select max(orderProductId) as orderProductId from OrderProduct";
+        long orderProductId = this.jdbcTemplate.queryForObject(getOrderProductIdQuery, (rs, rowNum) -> rs.getLong("orderProductId"));
+
+        String insertQuery2 = "INSERT INTO OrderOption (orderProductId, productOptionId, productOptionDetailId) values (?, ?, ?)";
+
+        for(int i = 0; i < orderProduct.getOrderOptionList().size(); i++) {
+            Object[] params = new Object[] {orderProductId,
+                    orderProduct.getOrderOptionList().get(i).getProductOptionId(),
+                    orderProduct.getOrderOptionList().get(i).getOptionDetailId()};
+            this.jdbcTemplate.update(insertQuery2, params);
+        }
+
+        String getBasketIdQuery = "select basketId from Basket where userId = ?";
+        long basketId = this.jdbcTemplate.queryForObject(getBasketIdQuery, (rs, rowNum) -> rs.getLong("basketId"), userId);
+
+        String insertQuery3 = "INSERT INTO BasketDetail (basketId, orderProductId, orderCount) values (?,?,?)";
+        Object[] params = new Object[] {basketId, orderProductId, orderProduct.getAmount()};
+
+        this.jdbcTemplate.update(insertQuery3, params);
+
+
+    }
+
+    public int countProductOption(long productId) {
+        String countOptionQuery = "select count(productOptionId) as countOption from ProductOption where productId = ?";
+        return this.jdbcTemplate.queryForObject(countOptionQuery, (rs, rowNum) -> rs.getInt("countOption"), productId);
+    }
 }

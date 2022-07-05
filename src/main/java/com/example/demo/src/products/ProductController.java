@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/products")
@@ -253,6 +253,43 @@ public class ProductController {
             return new BaseResponse<>(exception.getStatus());
         }
 
+    }
+
+    @ResponseBody
+    @PostMapping("/{userId}/{productId}/options")
+    public BaseResponse<String> addBasketProducts(@PathVariable("userId") long userId,
+                                                  @PathVariable("productId") long productId,
+                                                  @RequestBody OrderProduct orderProduct) {
+
+
+        if(orderProduct.getOrderOptionList() == null) {
+            return new BaseResponse<>(POST_ADD_EMPTY_ORDER_PRODUCT);
+        }
+
+        for (int i =0; i < orderProduct.getOrderOptionList().size(); i++) {
+            if (orderProduct.getOrderOptionList().get(i).getProductOptionId() == null ||
+                    orderProduct.getOrderOptionList().get(i).getOptionDetailId() == null) {
+                return new BaseResponse<>(POST_ADD_EMPTY_ORDER_PRODUCT_OPTION);
+            }
+        }
+
+        if(orderProduct.getAmount() == null) {
+            return new BaseResponse<>(POST_ADD_EMPTY_ORDER_AMOUNT);
+        }
+
+        try {
+            long userIdByJwt = jwtService.getUserIdx();
+            if (userIdByJwt != userId) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+            productService.addBasketProducts(userId, productId, orderProduct);
+            String result = "장바구니에 작품이 담겼습니다.";
+            return new BaseResponse<>(result);
+
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
     }
 
 

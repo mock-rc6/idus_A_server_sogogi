@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.products.model.*;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.utils.JwtService;
+import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,6 +194,31 @@ public class ProductService {
         try {
             GetProductOption getProductOption = productDao.getProductOptions(userId, productId);
             return getProductOption;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void addBasketProducts(long userId, long productId, OrderProduct orderProduct) throws BaseException {
+
+        if(productDao.countProductOption(productId) != orderProduct.getOrderOptionList().size()) {
+            throw new BaseException(INVALID_PRODUCT_OPTION_COUNT);
+        }
+
+        for(int i =0; i < orderProduct.getOrderOptionList().size(); i++) {
+            if(productDao.checkProductOption(orderProduct.getOrderOptionList().get(i).getProductOptionId()) != productId) {
+                throw new BaseException(INVALID_PRODUCT_OPTION);
+            }
+
+            if(productDao.checkProductOptionDetail(orderProduct.getOrderOptionList().get(i).getOptionDetailId()) !=
+                    orderProduct.getOrderOptionList().get(i).getProductOptionId()) {
+                throw new BaseException(INVALID_PRODUCT_OPTION_DETAIL);
+            }
+        }
+
+        try {
+            productDao.addBasketProducts(userId, productId, orderProduct);
 
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
