@@ -266,4 +266,9 @@ public class UserDao {
                 rs.getInt("price")), userId);
         return getLikeOfflineClasses;
     }
+
+    public int checkUserId(Long userId) {
+        String checkQuery = "select exists (select userId from User where userId=?)";
+        return this.jdbcTemplate.queryForObject(checkQuery, int.class, userId);
+    }
 }

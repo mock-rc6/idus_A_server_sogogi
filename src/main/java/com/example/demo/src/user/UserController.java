@@ -396,5 +396,19 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @GetMapping("/kakao-login")
+    public BaseResponse<KakaoUser> kakaoLogIn(@RequestParam("code") String code) {
+        if(code == null) {
+            return new BaseResponse<>(REQUEST_ERROR);
+        }
+        try {
+
+            return new BaseResponse<>(userService.kakaoLogIn(code));
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
 

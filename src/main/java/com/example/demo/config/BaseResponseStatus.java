@@ -95,6 +95,8 @@ public enum BaseResponseStatus {
     INVALID_PRODUCT_OPTION_DETAIL(false,3410,"잘못된 작품 추가옵션 상세입니다."),
 
 
+    INVALID_KAKAO_USER(false,3500,"잘못된 카카오 로그인입니다."),
+
 
 
     /**
