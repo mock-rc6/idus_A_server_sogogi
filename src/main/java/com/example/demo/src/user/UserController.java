@@ -410,5 +410,26 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/sms")
+    public BaseResponse<String> sendSMS(@RequestBody PhoneNumber phoneNumber) {
+
+        if(phoneNumber.getPhoneNumber() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONENUMBER);
+        }
+
+        String phoneNumberPattern = "^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$";
+        if(!Pattern.matches(phoneNumberPattern, phoneNumber.getPhoneNumber())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PHONENUMBER);
+        }
+
+        try {
+            String result = userService.sendSMS(phoneNumber.getPhoneNumber());
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
 

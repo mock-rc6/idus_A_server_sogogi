@@ -6,6 +6,8 @@ import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
 import com.google.gson.Gson;
+import net.nurigo.java_sdk.api.Message;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -323,6 +327,36 @@ public class UserService {
         System.out.println("id : " + id);
 
         return id;
+
+    }
+
+    public String sendSMS(String phoneNumber) throws BaseException {
+
+
+        String api_key = "NCSHMTVQRVBIG8NY";
+        String api_secret = "EZRJKX0NHBCV34G4H5FR23LPQDGODDGQ";
+        Message coolsms = new Message(api_key, api_secret);
+
+        Random rand  = new Random();
+        String numStr = "";
+        for(int i=0; i<4; i++) {
+            String ran = Integer.toString(rand.nextInt(10));
+            numStr+=ran;
+        }
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("to", phoneNumber);    // 수신전화번호
+        params.put("from", "01056754332");    // 발신전화번호. 테스트시에는 발신,수신 둘다 본인 번호로 하면 됨
+        params.put("type", "sms");
+        params.put("text", "인증번호는 [" + numStr + "] 입니다.");
+
+        try {
+            JSONObject obj = (JSONObject) coolsms.send(params);
+            System.out.println(obj.toString());
+            return numStr;
+        } catch (Exception exception) {
+            throw new BaseException(SEND_SMS_ERROR);
+        }
 
     }
 }

@@ -12,8 +12,8 @@ com/example/demo/src/user/model/KakaoUser.java
  com.example.demo.src.user.model.KakaoUser
 com/example/demo/src/classes/model/GetCategories.java
  com.example.demo.src.classes.model.GetCategories
-com/example/demo/src/classes/model/GetOfflineClass.java
- com.example.demo.src.classes.model.GetOfflineClass
+com/example/demo/config/BaseResponseStatus.java
+ com.example.demo.config.BaseResponseStatus
 com/example/demo/src/products/model/OrderOption.java
  com.example.demo.src.products.model.OrderOption
 com/example/demo/src/user/model/GetLikeProduct.java
@@ -28,12 +28,12 @@ com/example/demo/config/secret/Secret.java
  com.example.demo.config.secret.Secret
 com/example/demo/src/user/model/PostUserRes.java
  com.example.demo.src.user.model.PostUserRes
-com/example/demo/src/products/model/ProductOption.java
- com.example.demo.src.products.model.ProductOption
+com/example/demo/config/BaseResponse.java
+ com.example.demo.config.BaseResponse
 com/example/demo/src/classes/model/NearOfflineClass.java
  com.example.demo.src.classes.model.NearOfflineClass
-com/example/demo/src/products/model/Comment.java
- com.example.demo.src.products.model.Comment
+com/example/demo/src/products/ProductController.java
+ com.example.demo.src.products.ProductController
 com/example/demo/src/user/model/GetLikeOfflineClasses.java
  com.example.demo.src.user.model.GetLikeOfflineClasses
 com/example/demo/src/classes/model/NewOpenClasses.java
@@ -44,20 +44,22 @@ com/example/demo/src/products/model/RequestParams.java
  com.example.demo.src.products.model.RequestParams
 com/example/demo/src/products/model/OrderProduct.java
  com.example.demo.src.products.model.OrderProduct
-com/example/demo/src/user/model/BasketProductDetail.java
- com.example.demo.src.user.model.BasketProductDetail
-com/example/demo/src/products/model/GetProductsRealTime.java
- com.example.demo.src.products.model.GetProductsRealTime
+com/example/demo/src/user/model/PhoneNumber.java
+ com.example.demo.src.user.model.PhoneNumber
+com/example/demo/src/user/model/GetBasketProduct.java
+ com.example.demo.src.user.model.GetBasketProduct
+com/example/demo/src/classes/ClassController.java
+ com.example.demo.src.classes.ClassController
 com/example/demo/src/classes/model/ClassReview.java
  com.example.demo.src.classes.model.ClassReview
-com/example/demo/src/classes/model/GetOfflineClasses.java
- com.example.demo.src.classes.model.GetOfflineClasses
+com/example/demo/config/BaseException.java
+ com.example.demo.config.BaseException
 com/example/demo/src/products/model/GetProductsRes.java
  com.example.demo.src.products.model.GetProductsRes
-com/example/demo/DemoApplication.java
- com.example.demo.DemoApplication
-com/example/demo/src/user/model/GetUserDetail.java
- com.example.demo.src.user.model.GetUserDetail
+com/example/demo/src/products/ProductService.java
+ com.example.demo.src.products.ProductService
+com/example/demo/src/classes/ClassService.java
+ com.example.demo.src.classes.ClassService
 com/example/demo/src/products/model/NewProducts.java
  com.example.demo.src.products.model.NewProducts
 com/example/demo/utils/SHA256.java
@@ -82,8 +84,8 @@ com/example/demo/src/user/model/PostLoginRes.java
  com.example.demo.src.user.model.PostLoginRes
 com/example/demo/src/products/model/ProductReview.java
  com.example.demo.src.products.model.ProductReview
-com/example/demo/src/user/model/GetUserInfo.java
- com.example.demo.src.user.model.GetUserInfo
+com/example/demo/src/user/UserDao.java
+ com.example.demo.src.user.UserDao
 com/example/demo/src/classes/model/GetOnlineClasses.java
  com.example.demo.src.classes.model.GetOnlineClasses
 com/example/demo/src/user/model/PatchUserReq.java
@@ -114,8 +116,8 @@ com/example/demo/src/products/model/ShortReview.java
  com.example.demo.src.products.model.ShortReview
 com/example/demo/src/products/model/GetProductsNew.java
  com.example.demo.src.products.model.GetProductsNew
-com/example/demo/src/user/model/GetBasketProduct.java
- com.example.demo.src.user.model.GetBasketProduct
+com/example/demo/src/user/model/BasketProductDetail.java
+ com.example.demo.src.user.model.BasketProductDetail
 com/example/demo/src/classes/model/Address.java
  com.example.demo.src.classes.model.Address
 com/example/demo/src/user/model/User.java
@@ -124,24 +126,24 @@ com/example/demo/src/classes/model/OnlineClassReview.java
  com.example.demo.src.classes.model.OnlineClassReview
 com/example/demo/src/classes/model/BestReview.java
  com.example.demo.src.classes.model.BestReview
-com/example/demo/src/classes/ClassService.java
- com.example.demo.src.classes.ClassService
-com/example/demo/src/products/ProductController.java
- com.example.demo.src.products.ProductController
-com/example/demo/config/BaseResponseStatus.java
- com.example.demo.config.BaseResponseStatus
-com/example/demo/src/classes/ClassController.java
- com.example.demo.src.classes.ClassController
-com/example/demo/config/BaseResponse.java
- com.example.demo.config.BaseResponse
-com/example/demo/config/BaseException.java
- com.example.demo.config.BaseException
+com/example/demo/src/products/model/Comment.java
+ com.example.demo.src.products.model.Comment
+com/example/demo/src/products/model/ProductOption.java
+ com.example.demo.src.products.model.ProductOption
+com/example/demo/src/user/model/GetUserDetail.java
+ com.example.demo.src.user.model.GetUserDetail
+com/example/demo/src/user/model/GetUserInfo.java
+ com.example.demo.src.user.model.GetUserInfo
+com/example/demo/DemoApplication.java
+ com.example.demo.DemoApplication
+com/example/demo/src/classes/model/GetOfflineClasses.java
+ com.example.demo.src.classes.model.GetOfflineClasses
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
-com/example/demo/src/products/ProductService.java
- com.example.demo.src.products.ProductService
-com/example/demo/src/user/UserDao.java
- com.example.demo.src.user.UserDao
+com/example/demo/src/products/model/GetProductsRealTime.java
+ com.example.demo.src.products.model.GetProductsRealTime
+com/example/demo/src/classes/model/GetOfflineClass.java
+ com.example.demo.src.classes.model.GetOfflineClass
 com/example/demo/src/user/UserService.java
  com.example.demo.src.user.UserService
 com/example/demo/src/user/UserController.java
